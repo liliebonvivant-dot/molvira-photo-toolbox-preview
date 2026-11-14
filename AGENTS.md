@@ -28,3 +28,9 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Application architecture
+- Use a shared localized catalog and validated language/slug routes for all tool and institutional pages so language switching preserves page identity.
+- Keep Phase 1 workspaces presentation-only with disabled upload, editing, processing and export controls so no unavailable operation appears functional.
+- Store only the language preference in browser storage; image data must not be persisted by this preview.
+- Keep international metadata on content leaves and exclude development pages from indexing; resolve sitemap locations to the approved absolute domain before launch.

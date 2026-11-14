@@ -1,0 +1,4 @@
+import { copy, type Language, type Institutional } from '@/lib/photo/content';
+import { Brand } from './brand';
+import { Shell } from './shell';
+export function Institution({lang,slug,page}:{lang:Language,slug:string,page:Institutional}) {const c=copy[lang];const paragraphs=page==='about'?[c.aboutBody,c.aboutBody2]:page==='privacy'?[c.privacyBody,c.privacyBody2]:page==='terms'?[c.termsBody,c.termsBody2]:page==='cookies'?[c.cookiesBody,c.cookiesBody2]:[c.contactPending];return <Shell lang={lang} slug={slug}><main id="main" className="institution-page"><Brand compact/><h1>{c[page]}{page==='about'?' MOLVIRA PHOTO':''}</h1><p className="institution-lead">{c.institutionIntro}</p><div className="phase-notice"><p>{c.pending}</p></div>{paragraphs.map(p=><p className="institution-paragraph" key={p}>{p}</p>)}<p className="institution-philosophy">Easy · Free · Private.</p></main></Shell>;}
