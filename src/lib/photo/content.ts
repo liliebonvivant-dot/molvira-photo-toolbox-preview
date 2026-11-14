@@ -22,7 +22,7 @@ export const tools = [
  { id:'ecommerce', category:'create', tone:'violet', icon:'shop', slugs:['ecommerce-image-maker','criador-de-imagens-para-ecommerce','creador-de-imagenes-para-ecommerce'], titles:['E-commerce Image Maker','Criador de imagens para e-commerce','Creador de imágenes para e-commerce'], descriptions:['Consistent product photos for your shop and marketplaces.','Fotos de produtos padronizadas para lojas e marketplaces.','Fotos de productos uniformes para tiendas y marketplaces.'] }
 ] as const;
 export type Tool = typeof tools[number];
-export const langIndex = (lang: Language) => languages.indexOf(lang);
+export const langIndex = (lang: Language): 0 | 1 | 2 => lang === 'en' ? 0 : lang === 'pt' ? 1 : 2;
 export const institutional = { about:['about','sobre','acerca-de'], privacy:['privacy-policy','politica-de-privacidade','politica-de-privacidad'], terms:['terms-of-use','termos-de-uso','terminos-de-uso'], contact:['contact','contato','contacto'], cookies:['cookie-policy','politica-de-cookies','politica-de-cookies'] } as const;
 export type Institutional = keyof typeof institutional;
 export function resolvePage(lang:Language, slug:string) {
@@ -36,7 +36,7 @@ export function equivalentSlug(lang:Language, slug:string, next:Language) {
  return tool?.slugs[langIndex(next)] ?? (institution ? institutional[institution][langIndex(next)] : undefined);
 }
 export function pageHead(lang:Language, slug?:string) {
- const c=copy[lang]; const resolved=slug ? resolvePage(lang,slug) : {};
+ const c=copy[lang]; const resolved=slug ? resolvePage(lang,slug) : {tool:undefined,institution:undefined};
  const title=resolved.tool ? resolved.tool.titles[langIndex(lang)] : resolved.institution ? c[resolved.institution] : c.headline;
  const description=resolved.tool ? `${resolved.tool.descriptions[langIndex(lang)]} ${c.development}.` : resolved.institution ? c.institutionIntro : c.description;
  const path=slug ? `/${lang}/${slug}` : `/${lang}`;
