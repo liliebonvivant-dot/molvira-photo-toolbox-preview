@@ -18,3 +18,8 @@
 - [x] Implement local interactive crop, rotation, mirroring, bounded history and export in three languages.
 - [x] Verify formats, emulated touch, transparency, download correspondence, metadata and resize regression.
 - [x] Deliver an honest phase report; do not publish or activate other tools.
+
+## Phase 2.3 — Convert Images only
+- [x] Implement local JPG/JPEG, PNG, WebP conversion and lazy HEIC/HEIF decoding in three languages.
+- [x] Verify real downloads, transparency, dimensions, limits, HEIC compatibility, mobile layouts and previous tools; document unverified device/orientation variants.
+- [x] Deliver the phase report with tested support and limitations; do not publish or start another tool.
