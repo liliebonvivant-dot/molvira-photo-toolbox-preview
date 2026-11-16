@@ -1,12 +1,13 @@
 export type ImageFormat = 'image/jpeg' | 'image/png' | 'image/webp';
-export const resizeLimits = { fileBytes: 20 * 1024 * 1024, side: 8192, inputPixels: 16_000_000, outputPixels: 8_000_000, combinedPixels: 24_000_000 };
+export const resizeLimits = { fileBytes: 20 * 1024 * 1024, side: 12_000, pixels: 50_000_000 };
 export type ResizeError = 'fileType' | 'fileSize' | 'decode' | 'inputLimit' | 'dimensions' | 'outputLimit' | 'exportError';
 export function validDimensions(width: number, height: number): boolean {
   return Number.isSafeInteger(width) && Number.isSafeInteger(height) && width > 0 && height > 0;
 }
-export function dimensionError(width: number, height: number, inputPixels = 0): ResizeError | undefined {
+// budget: device-safe pixel area (see safePixelBudget); never above the absolute cap.
+export function dimensionError(width: number, height: number, budget: number = resizeLimits.pixels): ResizeError | undefined {
   if (!validDimensions(width, height)) return 'dimensions';
-  if (width > resizeLimits.side || height > resizeLimits.side || width * height > resizeLimits.outputPixels || width * height + inputPixels > resizeLimits.combinedPixels) return 'outputLimit';
+  if (width > resizeLimits.side || height > resizeLimits.side || width * height > Math.min(budget, resizeLimits.pixels)) return 'outputLimit';
   return undefined;
 }
 export function proportionalDimension(value: number, sourceAxis: number, otherAxis: number) {
@@ -50,11 +51,11 @@ export async function inspectImage(file: File) {
   const header=imageHeader(new Uint8Array(await file.arrayBuffer()));
   if(!header) throw new Error('fileType');
   if(!validDimensions(header.width,header.height)) throw new Error('decode');
-  if(header.width>resizeLimits.side || header.height>resizeLimits.side || header.width*header.height>resizeLimits.inputPixels) throw new Error('inputLimit');
+  if(header.width>resizeLimits.side || header.height>resizeLimits.side || header.width*header.height>resizeLimits.pixels) throw new Error('inputLimit');
   return header;
 }
 export function exportCanvas(image: HTMLImageElement, width: number, height: number, format: ImageFormat, quality: number): Promise<Blob> {
-  const error=dimensionError(width,height,image.naturalWidth*image.naturalHeight);
+  const error=dimensionError(width,height);
   if(error) return Promise.reject(new Error(error));
   const canvas=document.createElement('canvas'); canvas.width=width; canvas.height=height;
   const context=canvas.getContext('2d');

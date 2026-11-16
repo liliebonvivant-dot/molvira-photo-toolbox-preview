@@ -38,7 +38,7 @@ export function renderEdit(image: HTMLImageElement, edit: Edit, canvas: HTMLCanv
  ctx.transform(...edit.matrix);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(image,0,0);ctx.restore();
 }
 export async function exportEdit(image: HTMLImageElement, edit: Edit, format: ImageFormat, quality:number): Promise<Blob> {
- const error=dimensionError(edit.width,edit.height,image.naturalWidth*image.naturalHeight);if(error)throw new Error(error);
+ const error=dimensionError(edit.width,edit.height);if(error)throw new Error(error);
  const canvas=document.createElement('canvas');
  try { renderEdit(image,edit,canvas,false,format==='image/jpeg');return await new Promise<Blob>((resolve,reject)=>canvas.toBlob(blob=>blob?.type===format?resolve(blob):reject(new Error('exportError')),format,quality/100)); }
  finally {canvas.width=0;canvas.height=0;}
