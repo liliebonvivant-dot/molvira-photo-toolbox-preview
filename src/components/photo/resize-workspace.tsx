@@ -5,9 +5,12 @@ import { Button } from '@/components/ui/button';
 import { copy, langIndex, tools, type Language, type Tool } from '@/lib/photo/content';
 import { resizeCopy } from '@/lib/photo/resize-copy';
 import { dimensionError, exportCanvas, inspectImage, presetDimensions, proportionalDimension, resizeLimits, type ImageFormat, type ResizeError } from '@/lib/photo/resize';
+import { safePixelBudget } from '@/lib/photo/convert';
+import { decodeLocal, fallbackOffer, type ReduceOffer, type Size } from '@/lib/photo/large-image';
+import { ReducePrompt, ResolutionNote } from './reduce-prompt';
 import { Shell, ReservedSpace } from './shell';
 import { ToolCard, ToolIcon } from './tool-card';
-type Source = { image: HTMLImageElement; url: string; name: string; width: number; height: number };
+type Source = { image: HTMLImageElement; url: string; name: string; width: number; height: number; file: File; originalWidth: number; originalHeight: number; reduced: boolean };
 type Result = { blob: Blob; url: string; key: string };
 function errorCode(error: unknown): ResizeError {
  const code=error instanceof Error ? error.message : '';
@@ -21,8 +24,8 @@ export function ResizeWorkspace({ tool, lang, slug }: {tool: Tool; lang: Languag
  const [locked,setLocked]=useState(true), [preset,setPreset]=useState('custom');
  const [format,setFormat]=useState<ImageFormat>('image/png'), [quality,setQuality]=useState(90);
  const [result,setResult]=useState<Result>(), [busy,setBusy]=useState(false), [loading,setLoading]=useState(false);
- const [error,setError]=useState<ResizeError>(), [dragging,setDragging]=useState(false);
- const w=Number(width),h=Number(height), validation=source ? dimensionError(w,h,source.width*source.height) : undefined;
+ const [error,setError]=useState<ResizeError>(), [dragging,setDragging]=useState(false), [pending,setPending]=useState<ReduceOffer>();
+ const w=Number(width),h=Number(height), validation=source ? dimensionError(w,h,safePixelBudget()) : undefined;
  const key=`${source?.url}|${width}|${height}|${format}|${format==='image/png'?100:quality}`;
  const current=result?.key===key && !validation && !loading ? result : undefined;
  function revoke(url:string) {URL.revokeObjectURL(url);urls.current.delete(url);}
@@ -38,29 +41,25 @@ export function ResizeWorkspace({ tool, lang, slug }: {tool: Tool; lang: Languag
     if(cancelled)return;
     outputUrl=URL.createObjectURL(blob);urls.current.add(outputUrl);
     setResult({blob,url:outputUrl,key});
-   } catch(e) {if(!cancelled)setError(errorCode(e));}
+   } catch(e) {if(cancelled)return;const offer=!source.reduced && errorCode(e)==='exportError' ? fallbackOffer(source.file,source.originalWidth,source.originalHeight) : undefined;if(offer)setPending(offer);else setError(errorCode(e));}
    finally {if(!cancelled)setBusy(false);}
   },250);
   return ()=>{cancelled=true;clearTimeout(timer);if(outputUrl)revoke(outputUrl);};
  },[source,key,validation,loading,w,h,format,quality]);
- async function load(file?:File) {
+ async function load(file?:File,target?:Size) {
   if(!file)return;
-  const id=++loadId.current;setLoading(true);setError(undefined);
-  let url:string|undefined;
+  const id=++loadId.current;setLoading(true);setError(undefined);setPending(undefined);
   try {
    const header=await inspectImage(file);
    if(id!==loadId.current)return;
-   url=URL.createObjectURL(file);urls.current.add(url);
-   const image=new window.Image();image.src=url;
-   await image.decode();
-   if(id!==loadId.current){revoke(url);return;}
-   const iw=image.naturalWidth,ih=image.naturalHeight;
-   if(!iw || !ih)throw new Error('decode');
-   if(iw>resizeLimits.side || ih>resizeLimits.side || iw*ih>resizeLimits.inputPixels)throw new Error('inputLimit');
+   const out=await decodeLocal(file,header,target);
+   if(id!==loadId.current){if('image' in out)URL.revokeObjectURL(out.url);return;}
+   if(!('image' in out)){setPending(out);return;}
+   urls.current.add(out.url);
    if(source)revoke(source.url);
-   setSource({image,url,name:file.name,width:iw,height:ih});
-   setWidth(String(iw));setHeight(String(ih));setPreset('custom');setLocked(true);setFormat(header.format);setQuality(90);
-  } catch(e) {if(url)revoke(url);if(id===loadId.current)setError(errorCode(e));}
+   setSource({...out,name:file.name,file});
+   setWidth(String(out.width));setHeight(String(out.height));setPreset('custom');setLocked(true);setFormat(header.format);setQuality(90);
+  } catch(e) {if(id===loadId.current)setError(errorCode(e));}
   finally {if(id===loadId.current)setLoading(false);}
  }
  function changeDimension(axis:'width'|'height',value:string) {
@@ -95,6 +94,7 @@ export function ResizeWorkspace({ tool, lang, slug }: {tool: Tool; lang: Languag
      <input ref={input} type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" className="sr-only" aria-label={c.choose} tabIndex={-1} onChange={e=>{void load(e.target.files?.[0]);e.target.value='';}}/>
      <Button size="lg" disabled={loading} onClick={()=>input.current?.click()}>{loading?<LoaderCircle className="animate-spin"/>:<ImagePlus/>}{loading?r.processing:source?r.another:c.choose}</Button><small>{r.formats}</small>
     </section>
+    {pending && <ReducePrompt offer={pending} lang={lang} onReduce={()=>void load(pending.file,pending.reduced)} onCancel={()=>setPending(undefined)}/>}
     {source && <section className="preview-section"><h2>{r.original} · {source.width} × {source.height} px</h2><div className="resize-image-frame"><img src={source.url} alt={r.original}/></div><p className="resize-filename">{source.name}</p></section>}
     <section className="preview-section"><h2>{r.result}{current?` · ${w} × ${h} px`:''}</h2><div className="resize-image-frame" aria-live="polite">{current?<img src={current.url} alt={r.result}/>:<div className="resize-empty">{busy || loading?<LoaderCircle className="animate-spin" size={30}/>:<ImageIcon size={40} strokeWidth={1}/>}<p>{busy || loading?r.processing:r.empty}</p></div>}</div>{current && <p className="resize-file-size">{r.actual}: {(current.blob.size/1024).toLocaleString(lang,{maximumFractionDigits:1})} KiB · {format==='image/jpeg'?'JPG':format==='image/png'?'PNG':'WebP'}</p>}</section>
    </div>
@@ -108,6 +108,7 @@ export function ResizeWorkspace({ tool, lang, slug }: {tool: Tool; lang: Languag
      {format!=='image/png' && <label className="setting-field"><span>{r.quality}<small>{quality}%</small></span><input aria-label={r.quality} type="range" min={1} max={100} value={quality} onChange={e=>{setQuality(Number(e.target.value));setError(undefined);}}/></label>}
      {format==='image/jpeg' && <p className="settings-hint">{r.jpg}</p>}
     </fieldset>
+    {source && <ResolutionNote source={source} lang={lang}/>}
     <p className="settings-hint">{r.limits}</p>
     <div aria-live="polite">{shownError && <p role="alert" className="resize-error">{r[shownError]}</p>}</div>
     <div className="export-section"><h3>{c.export}</h3><Button className="resize-download" disabled={!current || !!shownError || busy} size="lg" onClick={download}>{busy?<LoaderCircle className="animate-spin"/>:<Download/>}{busy?r.processing:r.download}</Button></div>

@@ -6,11 +6,14 @@ import { Button } from '@/components/ui/button';
 import { copy, langIndex, tools, type Language, type Tool } from '@/lib/photo/content';
 import { resizeCopy } from '@/lib/photo/resize-copy';
 import { cropCopy } from '@/lib/photo/crop-copy';
-import { inspectImage, resizeLimits, dimensionError, type ImageFormat, type ResizeError } from '@/lib/photo/resize';
+import { inspectImage, dimensionError, type ImageFormat, type ResizeError } from '@/lib/photo/resize';
 import { originalEdit, rotateEdit, flipEdit, cropEdit, fitRatio, renderEdit, exportEdit, historyLimit, type Edit } from '@/lib/photo/crop';
+import { safePixelBudget } from '@/lib/photo/convert';
+import { decodeLocal, fallbackOffer, type ReduceOffer, type Size } from '@/lib/photo/large-image';
+import { ReducePrompt, ResolutionNote } from './reduce-prompt';
 import { Shell, ReservedSpace } from './shell';
 import { ToolIcon, ToolCard } from './tool-card';
-type Source={image:HTMLImageElement;url:string;name:string;width:number;height:number};
+type Source={image:HTMLImageElement;url:string;name:string;width:number;height:number;file:File;originalWidth:number;originalHeight:number;reduced:boolean};
 const fullCrop:PercentCrop={unit:'%',x:0,y:0,width:100,height:100};
 const codes:ResizeError[]=['fileType','fileSize','decode','inputLimit','dimensions','outputLimit','exportError'];
 export function CropWorkspace({tool,lang,slug}:{tool:Tool;lang:Language;slug:string}) {
@@ -18,11 +21,11 @@ export function CropWorkspace({tool,lang,slug}:{tool:Tool;lang:Language;slug:str
  const input=useRef<HTMLInputElement>(null),canvas=useRef<HTMLCanvasElement>(null),loadId=useRef(0),urls=useRef(new Set<string>());
  const [source,setSource]=useState<Source>(),[history,setHistory]=useState<Edit[]>([]),[index,setIndex]=useState(0);
  const [selection,setSelection]=useState<PercentCrop>(fullCrop),[ratio,setRatio]=useState('free'),[angle,setAngle]=useState(0),[expand,setExpand]=useState(true);
- const [format,setFormat]=useState<ImageFormat>('image/png'),[quality,setQuality]=useState(90),[loading,setLoading]=useState(false),[busy,setBusy]=useState(false),[dragging,setDragging]=useState(false),[error,setError]=useState<ResizeError>();
+ const [format,setFormat]=useState<ImageFormat>('image/png'),[quality,setQuality]=useState(90),[loading,setLoading]=useState(false),[busy,setBusy]=useState(false),[dragging,setDragging]=useState(false),[error,setError]=useState<ResizeError>(),[pending,setPending]=useState<ReduceOffer>();
  const [result,setResult]=useState<{url:string;blob:Blob;key:string}>();
  const committed=history[index],edit=committed?(angle?rotateEdit(committed,angle,expand):committed):undefined;
  const key=JSON.stringify([edit,format,format==='image/png'?100:quality,source?.url]);
- const validation=edit&&source?dimensionError(edit.width,edit.height,source.width*source.height):undefined;
+ const validation=edit&&source?dimensionError(edit.width,edit.height,safePixelBudget()):undefined;
  const current=result?.key===key&&!loading&&!validation&&!error?result:undefined;
  const aspect=ratio==='free'?undefined:Number(ratio.split(':')[0])/Number(ratio.split(':')[1]);
  function revoke(url:string){URL.revokeObjectURL(url);urls.current.delete(url);}
@@ -31,15 +34,16 @@ export function CropWorkspace({tool,lang,slug}:{tool:Tool;lang:Language;slug:str
  useEffect(()=>{const target=canvas.current;if(!target||!source||!edit)return;try{renderEdit(source.image,edit,target,true);}catch(e){fail(e);}return()=>{target.width=0;target.height=0;};},[source,key]);
  useEffect(()=>{
   let cancelled=false,url:string|undefined;setResult(undefined);setBusy(false);if(!source||!edit||validation||loading)return;
-  setBusy(true);setError(undefined);const timer=setTimeout(async()=>{try{const blob=await exportEdit(source.image,edit,format,quality);if(cancelled)return;url=URL.createObjectURL(blob);urls.current.add(url);setResult({url,blob,key});}catch(e){if(!cancelled)fail(e);}finally{if(!cancelled)setBusy(false);}},250);
+  setBusy(true);setError(undefined);const timer=setTimeout(async()=>{try{const blob=await exportEdit(source.image,edit,format,quality);if(cancelled)return;url=URL.createObjectURL(blob);urls.current.add(url);setResult({url,blob,key});}catch(e){if(cancelled)return;const offer=!source.reduced&&e instanceof Error&&e.message==='exportError'?fallbackOffer(source.file,source.originalWidth,source.originalHeight):undefined;if(offer)setPending(offer);else fail(e);}finally{if(!cancelled)setBusy(false);}},250);
   return()=>{cancelled=true;clearTimeout(timer);if(url)revoke(url);};
  },[source,key,validation,loading]);
- async function load(file?:File){
-  if(!file)return;const id=++loadId.current;setLoading(true);setError(undefined);let url:string|undefined;
-  try{const header=await inspectImage(file);if(id!==loadId.current)return;url=URL.createObjectURL(file);urls.current.add(url);const image=new window.Image();image.src=url;await image.decode();if(id!==loadId.current){revoke(url);return;}
-   const width=image.naturalWidth,height=image.naturalHeight;if(!width||!height)throw new Error('decode');if(width>resizeLimits.side||height>resizeLimits.side||width*height>resizeLimits.inputPixels)throw new Error('inputLimit');
-   if(source)revoke(source.url);setSource({image,url,name:file.name,width,height});setHistory([originalEdit(width,height)]);setIndex(0);setSelection(fullCrop);setRatio('free');setAngle(0);setExpand(true);setFormat(header.format);setQuality(90);
-  }catch(e){if(url)revoke(url);if(id===loadId.current)fail(e);}finally{if(id===loadId.current)setLoading(false);}
+ async function load(file?:File,target?:Size){
+  if(!file)return;const id=++loadId.current;setLoading(true);setError(undefined);setPending(undefined);
+  try{const header=await inspectImage(file);if(id!==loadId.current)return;const out=await decodeLocal(file,header,target);if(id!==loadId.current){if('image' in out)URL.revokeObjectURL(out.url);return;}
+   if(!('image' in out)){setPending(out);return;}
+   const {width,height}=out;urls.current.add(out.url);
+   if(source)revoke(source.url);setSource({...out,name:file.name,file});setHistory([originalEdit(width,height)]);setIndex(0);setSelection(fullCrop);setRatio('free');setAngle(0);setExpand(true);setFormat(header.format);setQuality(90);
+  }catch(e){if(id===loadId.current)fail(e);}finally{if(id===loadId.current)setLoading(false);}
  }
  function selectRatio(value:string,base=edit){setRatio(value);if(!base)return;const a=value==='free'?undefined:Number(value.split(':')[0])/Number(value.split(':')[1]);const rect=fitRatio(base.width,base.height,a);setSelection({unit:'%',x:rect.x/base.width*100,y:rect.y/base.height*100,width:rect.width/base.width*100,height:rect.height/base.height*100});}
  function commit(next:Edit){setHistory([...history.slice(0,index+1),next].slice(-(historyLimit+1)));setIndex(Math.min(index+1,historyLimit));setAngle(0);setError(undefined);selectRatio(ratio,next);}
@@ -53,6 +57,7 @@ export function CropWorkspace({tool,lang,slug}:{tool:Tool;lang:Language;slug:str
   <div className="tool-page-heading"><ToolIcon tool={tool}/><div><h1>{tool.titles[langIndex(lang)]}</h1><p>{tool.descriptions[langIndex(lang)]}</p></div></div><div className="phase-notice"><ShieldCheck size={18}/><p>{r.local}</p></div>
   <div className="workspace" aria-busy={loading||busy}><div className="workspace-main">
    <section className={`upload-area ${dragging?'resize-dragging':''}`} onDragOver={e=>{e.preventDefault();setDragging(true);}} onDragLeave={()=>setDragging(false)} onDrop={e=>{e.preventDefault();setDragging(false);void load(e.dataTransfer.files[0]);}}><ImagePlus size={32}/><h2>{c.upload}</h2><p>{c.drop}</p><input ref={input} type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" className="sr-only" aria-label={c.choose} tabIndex={-1} onChange={e=>{void load(e.target.files?.[0]);e.target.value='';}}/><Button size="lg" disabled={loading} onClick={()=>input.current?.click()}>{loading?<LoaderCircle className="animate-spin"/>:<ImagePlus/>}{loading?r.processing:source?r.another:c.choose}</Button><small>{r.formats}</small></section>
+   {pending&&<ReducePrompt offer={pending} lang={lang} onReduce={()=>void load(pending.file,pending.reduced)} onCancel={()=>setPending(undefined)}/>}
    {source&&edit&&<><section className="preview-section"><h2>{r.original} · {source.width} × {source.height} px</h2><div className="resize-image-frame crop-original"><img src={source.url} alt={r.original}/></div><p className="resize-filename">{source.name}</p></section><section className="preview-section"><h2>{t.selection} · {Math.max(1,Math.round(edit.width*selection.width/100))} × {Math.max(1,Math.round(edit.height*selection.height/100))} px</h2><div className="crop-stage"><ReactCrop crop={selection} onChange={(_,percent)=>setSelection(percent)} {...(aspect === undefined ? {} : {aspect})} keepSelection ruleOfThirds ariaLabels={{cropArea:t.selection,nDragHandle:t.selection,neDragHandle:t.selection,eDragHandle:t.selection,seDragHandle:t.selection,sDragHandle:t.selection,swDragHandle:t.selection,wDragHandle:t.selection,nwDragHandle:t.selection}}><canvas ref={canvas} aria-label={t.selection}/></ReactCrop></div></section></>}
    <section className="preview-section"><h2>{t.result}{current&&edit?` · ${edit.width} × ${edit.height} px`:''}</h2><div className="resize-image-frame" aria-live="polite">{current?<img src={current.url} alt={t.result}/>:<div className="resize-empty">{busy||loading?<LoaderCircle className="animate-spin" size={30}/>:<ImageIcon size={40}/>}<p>{busy||loading?r.processing:t.empty}</p></div>}</div>{current&&<p className="resize-file-size">{r.actual}: {(current.blob.size/1024).toLocaleString(lang,{maximumFractionDigits:1})} KiB · {format==='image/jpeg'?'JPG':format==='image/png'?'PNG':'WebP'}</p>}</section>
   </div><aside className="settings-panel"><div className="panel-heading"><h2>{c.settings}</h2></div><fieldset className="resize-fields" disabled={!source||loading}>
@@ -64,7 +69,7 @@ export function CropWorkspace({tool,lang,slug}:{tool:Tool;lang:Language;slug:str
    <label className="setting-check"><input type="checkbox" checked={expand} onChange={e=>{setExpand(e.target.checked);setError(undefined);setSelection(fullCrop);setRatio('free');}}/>{t.expand}</label><p className="settings-hint">{expand?t.expanded:t.cut}</p><Button variant="outline" className="resize-restore crop-angle-apply" disabled={!angle} onClick={()=>{if(edit)commit(edit);}}><RotateCw/>{t.applyAngle}</Button>
    <div className="crop-toolbar">{icon(t.horizontal,FlipHorizontal2,()=>{if(edit)commit(flipEdit(edit,true));})}{icon(t.verticalFlip,FlipVertical2,()=>{if(edit)commit(flipEdit(edit,false));})}</div>
    <label className="setting-field"><span>{c.output}</span><select aria-label={c.output} value={format} onChange={e=>{setFormat(e.target.value as ImageFormat);setError(undefined);}}><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></select></label>{format!=='image/png'&&<label className="setting-field"><span>{r.quality}<small>{quality}%</small></span><input type="range" aria-label={r.quality} min={1} max={100} value={quality} onChange={e=>{setQuality(Number(e.target.value));setError(undefined);}}/></label>}{format==='image/jpeg'&&<p className="settings-hint">{r.jpg}</p>}
-  </fieldset><p className="settings-hint">{t.history}</p><p className="settings-hint">{r.limits}</p><div aria-live="polite">{(error||validation)&&<p role="alert" className="resize-error">{r[error||validation||'exportError']}</p>}</div><div className="export-section"><h3>{c.export}</h3><Button className="resize-download" size="lg" disabled={!current||busy} onClick={download}>{busy?<LoaderCircle className="animate-spin"/>:<Download/>}{busy?r.processing:t.download}</Button></div></aside></div>
+  </fieldset>{source&&<ResolutionNote source={source} lang={lang}/>}<p className="settings-hint">{t.history}</p><p className="settings-hint">{r.limits}</p><div aria-live="polite">{(error||validation)&&<p role="alert" className="resize-error">{r[error||validation||'exportError']}</p>}</div><div className="export-section"><h3>{c.export}</h3><Button className="resize-download" size="lg" disabled={!current||busy} onClick={download}>{busy?<LoaderCircle className="animate-spin"/>:<Download/>}{busy?r.processing:t.download}</Button></div></aside></div>
   <ReservedSpace lang={lang}/><section className="how-section"><h2>{t.how}</h2><div className="steps-grid">{[[r.first,r.firstDesc],[t.second,t.secondDesc],[r.third,t.thirdDesc]].map(([title,desc],n)=><div key={title}><span className="step-number">{n+1}</span><h3>{title}</h3><p>{desc}</p></div>)}</div></section><section className="privacy-strip"><ShieldCheck size={25}/><div><h3>{c.private}</h3><p>{r.local}</p></div></section><section className="faq-section"><h2>{c.faq}</h2>{[[t.faq1,t.answer1],[t.faq2,t.answer2],[t.faq3,t.answer3]].map(([q,a])=><details key={q}><summary>{q}</summary><p>{a}</p></details>)}</section><section className="related-section"><h2>{c.related}</h2><div className="tool-grid related-grid">{tools.filter(item=>item.id!==tool.id&&item.category===tool.category).slice(0,3).map(item=><ToolCard key={item.id} tool={item} lang={lang}/>)}</div></section>
  </main></Shell>;
 }

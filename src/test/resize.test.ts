@@ -5,8 +5,9 @@ describe('local resize rules',()=>{
  it('updates the other dimension proportionally',()=>expect(proportionalDimension(300,400,200)).toBe(150));
  it('permits independent dimensions',()=>expect(dimensionError(301,177)).toBeUndefined());
  it.each([[0,10],[-1,10],[10,0],[1.5,10],[NaN,10],[Infinity,10]])('rejects invalid dimensions %s × %s',(w,h)=>expect(dimensionError(w,h)).toBe('dimensions'));
- it('limits output memory',()=>{expect(dimensionError(4000,2000)).toBeUndefined();expect(dimensionError(4000,2001)).toBe('outputLimit');});
- it('limits each side',()=>expect(dimensionError(8193,1)).toBe('outputLimit'));
+ it('accepts 24 and 48 MP outputs up to 50 MP',()=>{expect(dimensionError(6000,4000)).toBeUndefined();expect(dimensionError(8064,6048)).toBeUndefined();expect(dimensionError(8000,6251)).toBe('outputLimit');});
+ it('respects the device budget',()=>{expect(dimensionError(8064,6048,16_000_000)).toBe('outputLimit');expect(dimensionError(4618,3464,16_000_000)).toBeUndefined();});
+ it('limits each side',()=>expect(dimensionError(12001,1)).toBe('outputLimit'));
  it('keeps tiny presets nonzero',()=>expect(presetDimensions(1,1,25)).toEqual({width:1,height:1}));
  it('rejects non-image bytes',()=>expect(imageHeader(new Uint8Array([1,2,3]))).toBeUndefined());
  it('validates file contents instead of a forged MIME type',async()=>{const file={size:4,arrayBuffer:async()=>new Uint8Array([1,2,3,4]).buffer} as File;await expect(inspectImage(file)).rejects.toThrow('fileType');});
