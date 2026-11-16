@@ -31,7 +31,8 @@ use the editor.
 
 ## Application architecture
 - Use a shared localized catalog and validated language/slug routes for all tool and institutional pages so language switching preserves page identity.
-- Keep unapproved tool workspaces presentation-only; only the approved resize workspace exposes local image processing.
+- Keep unapproved tool workspaces presentation-only; resize and crop/rotate are the only approved local processors.
 - Isolate resize UI, localization and native Canvas logic; validate encoded headers before decoding and release object URLs and canvas memory after use.
+- Use react-image-crop for touch/keyboard selection and numeric affine transforms with clipping polygons for crop history; render from the original once to avoid cumulative quality loss and bound history to 30 steps.
 - Store only the language preference in browser storage; image data must not be persisted by this preview.
 - Keep international metadata on content leaves and exclude development pages from indexing; resolve sitemap locations to the approved absolute domain before launch.

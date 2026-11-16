@@ -8,6 +8,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "react-image-crop/dist/ReactCrop.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -306,4 +307,14 @@
 .resize-download { width:100%; white-space:normal; height:auto; min-height:44px; padding:10px; font-size:12px; }
 .resize-error { color:var(--destructive); font-size:12px; line-height:1.7; margin-top:18px; }
 .resize-dragging { border-color:var(--primary); background:var(--accent); }
+.crop-stage { display:flex; justify-content:center; background:repeating-conic-gradient(var(--card) 0% 25%,var(--muted) 0% 50%) 0 0/20px 20px; border:1px solid var(--border); padding:14px; overflow:hidden; }
+.crop-stage .ReactCrop { max-width:100%; touch-action:none; }
+.crop-stage canvas { display:block; max-width:100%; max-height:450px; width:auto; height:auto; }
+.crop-toolbar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+.crop-toolbar button { width:44px; height:44px; }
+.crop-angle-apply { margin-top:14px; }
+.crop-original { height:170px; }
+.crop-stage .ReactCrop__drag-handle::after { background:var(--primary); border-color:var(--card); }
+.crop-stage .ReactCrop__crop-selection { color:var(--primary-foreground); }
+@media(max-width:700px) { .crop-stage { padding:12px; } .crop-stage canvas { max-height:340px; } .crop-stage .ReactCrop__drag-handle { width:44px; height:44px; } }
 @media(max-width:700px) { .resize-image-frame { height:240px; } .resize-page .setting-field input:not([type=range]),.resize-page .setting-field select { font-size:16px; min-height:44px; } .resize-page .setting-check { min-height:32px; } }
