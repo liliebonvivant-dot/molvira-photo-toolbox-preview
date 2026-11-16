@@ -40,7 +40,7 @@ export const convertCopy: Record<Language, typeof en> = {
     third: 'Confira e baixe', thirdDesc: 'Baixe o arquivo da prévia com a extensão correspondente. As dimensões em pixels não mudam, salvo se você escolher a redução oferecida; nenhuma imagem é enviada a servidores.',
     faq1: 'Converter JPG para PNG melhora a qualidade?', answer1: 'Não. PNG evita novas perdas de codificação, mas não recupera detalhes perdidos anteriormente no JPG. O arquivo pode ficar maior.',
     faq2: 'Posso converter fotos HEIC do iPhone?', answer2: 'Arquivos HEIC/HEIF compatíveis podem ser abertos localmente e exportados como JPG, PNG ou WebP. Alguns codecs, variantes HDR ou arquivos podem não funcionar. Uma mensagem clara aparece em vez de um resultado simulado. Não oferecemos saída HEIC.',
-    faq3: 'A transparência e as dimensões são preservadas?', answer3: 'PNG e WebP mantêm a transparência compatível. JPG usa fundo branco. As dimensões exibidas, corrigidas conforme a orientação, são preservadas. Perfis de cor e outros metadados não são copiados.',
+    faq3: 'A transparência e as dimensões são preservadas?', answer3: 'PNG e WebP mantêm a transparência compatível. JPG usa fundo branco. As dimensões exibidas, corrigidas conforme a orientação, são preservadas, salvo se você escolher expressamente uma resolução reduzida. Perfis de cor e outros metadados não são copiados.',
     metadata: 'Converta imagens JPG/JPEG, PNG e WebP localmente e grátis. Abra HEIC/HEIF compatíveis, preserve dimensões, veja o tamanho real e baixe.',
   },
   es: {
@@ -58,7 +58,7 @@ export const convertCopy: Record<Language, typeof en> = {
     heicInfo: 'HEIC/HEIF se intenta abrir primero en el navegador y después con un decodificador local cargado bajo demanda. La compatibilidad depende del archivo y del dispositivo. Solo se convierte la imagen estática principal; no se conservan animación, HDR, profundidad ni metadatos.',
     how: 'Cómo convertir imágenes JPG, PNG, WebP y HEIC', first: 'Elige tu imagen', firstDesc: 'Abre un archivo o arrástralo aquí. El formato, las dimensiones y el tamaño original se detectan automáticamente.',
     second: 'Elige el formato de salida', secondDesc: 'Selecciona JPG, PNG o WebP. Ajusta la calidad de JPG o WebP y compara la vista previa realmente exportada y el tamaño del archivo.',
-    third: 'Revisa y descarga', thirdDesc: 'Descarga el archivo de la vista previa con su extensión correspondiente. Las dimensiones no cambian; ninguna imagen se envía a servidores.',
+    third: 'Revisa y descarga', thirdDesc: 'Descarga el archivo de la vista previa con su extensión correspondiente. Las dimensiones no cambian, salvo que elijas la reducción ofrecida; ninguna imagen se envía a servidores.',
     faq1: '¿Convertir JPG a PNG mejora la calidad?', answer1: 'No. PNG evita nuevas pérdidas de codificación, pero no recupera detalles perdidos anteriormente en un JPG. El archivo puede aumentar de tamaño.',
     faq2: '¿Puedo convertir fotos HEIC del iPhone?', answer2: 'Los archivos HEIC/HEIF compatibles se pueden abrir localmente y exportar como JPG, PNG o WebP. Algunos códecs, variantes HDR o archivos pueden no funcionar. Se muestra un error claro en vez de un resultado simulado. No se ofrece salida HEIC.',
     faq3: '¿Se conservan la transparencia y las dimensiones?', answer3: 'PNG y WebP conservan la transparencia compatible. JPG usa fondo blanco. Se conservan las dimensiones mostradas, corregidas según la orientación, salvo que elijas expresamente una resolución reducida. No se copian perfiles de color ni otros metadatos.',
