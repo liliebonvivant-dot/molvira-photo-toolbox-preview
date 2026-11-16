@@ -45,4 +45,34 @@ describe('local conversion rules',()=>{
   const spy=vi.spyOn(document,'createElement').mockReturnValue({width:0,height:0,getContext:()=>({drawImage:vi.fn()}),toBlob:(cb:BlobCallback)=>cb(new Blob(['x'],{type:'image/png'}))} as unknown as HTMLCanvasElement);
   try{await expect(encodeConversion({naturalWidth:400,naturalHeight:300} as HTMLImageElement,'image/webp',90)).rejects.toThrow('exportError');}finally{spy.mockRestore();}
  });
+  it.each(['image/jpeg','image/png','image/webp'] as const)('encodes the explicitly reduced dimensions for %s',async format=>{
+   const drawImage=vi.fn();
+   const canvas={width:0,height:0,getContext:()=>({drawImage,fillRect:vi.fn()}),toBlob:(cb:BlobCallback)=>cb(new Blob(['valid'],{type:format}))};
+   const spy=vi.spyOn(document,'createElement').mockReturnValue(canvas as unknown as HTMLCanvasElement);
+   try{
+    const image={naturalWidth:8064,naturalHeight:6048} as HTMLImageElement;
+    expect((await encodeConversion(image,format,90,4618,3464)).type).toBe(format);
+    expect(drawImage).toHaveBeenCalledWith(image,0,0,4618,3464);
+    expect([canvas.width,canvas.height]).toEqual([0,0]);
+   }finally{spy.mockRestore();}
+  });
+  it('rejects an empty encoded file',async()=>{
+   const spy=vi.spyOn(document,'createElement').mockReturnValue({width:0,height:0,getContext:()=>({drawImage:vi.fn()}),toBlob:(cb:BlobCallback)=>cb(new Blob([],{type:'image/png'}))} as unknown as HTMLCanvasElement);
+   try{await expect(encodeConversion({naturalWidth:400,naturalHeight:300} as HTMLImageElement,'image/png',90)).rejects.toThrow('exportError');}finally{spy.mockRestore();}
+  });
+  it('times out a missing encoder callback and releases the canvas',async()=>{
+   vi.useFakeTimers();
+   const canvas={width:0,height:0,getContext:()=>({drawImage:vi.fn()}),toBlob:vi.fn()};
+   const spy=vi.spyOn(document,'createElement').mockReturnValue(canvas as unknown as HTMLCanvasElement);
+   try{
+    const check=expect(encodeConversion({naturalWidth:400,naturalHeight:300} as HTMLImageElement,'image/png',90)).rejects.toThrow('exportError');
+    await vi.advanceTimersByTimeAsync(30_000);await check;
+    expect([canvas.width,canvas.height]).toEqual([0,0]);
+   }finally{spy.mockRestore();vi.useRealTimers();}
+  });
+  it('releases canvas memory if drawing throws',async()=>{
+   const canvas={width:0,height:0,getContext:()=>({drawImage:()=>{throw new Error('memory');}})};
+   const spy=vi.spyOn(document,'createElement').mockReturnValue(canvas as unknown as HTMLCanvasElement);
+   try{await expect(encodeConversion({naturalWidth:400,naturalHeight:300} as HTMLImageElement,'image/png',90)).rejects.toThrow('exportError');expect([canvas.width,canvas.height]).toEqual([0,0]);}finally{spy.mockRestore();}
+  });
 });

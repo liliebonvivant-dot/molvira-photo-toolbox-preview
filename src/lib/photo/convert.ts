@@ -91,12 +91,21 @@ export function encodeConversion(image: HTMLImageElement, format: ImageFormat, q
   const release = () => { canvas.width = 0; canvas.height = 0; };
   if (!context) { release(); return Promise.reject(new Error('exportError')); }
   // JPEG's white matte is an encoding requirement, not a UI color.
-  if (format === 'image/jpeg') { context.fillStyle = '#ffffff'; context.fillRect(0, 0, width, height); }
-  if (width === image.naturalWidth && height === image.naturalHeight) context.drawImage(image, 0, 0);
-  else { context.imageSmoothingQuality = 'high'; context.drawImage(image, 0, 0, width, height); }
+  try {
+    if (format === 'image/jpeg') { context.fillStyle = '#ffffff'; context.fillRect(0, 0, width, height); }
+    if (width === image.naturalWidth && height === image.naturalHeight) context.drawImage(image, 0, 0);
+    else { context.imageSmoothingQuality = 'high'; context.drawImage(image, 0, 0, width, height); }
+  } catch { release(); return Promise.reject(new Error('exportError')); }
   return new Promise((resolve, reject) => {
-    try { canvas.toBlob(blob => { release(); if (blob?.type === format) resolve(blob); else reject(new Error('exportError')); }, format, quality / 100); }
-    catch { release(); reject(new Error('exportError')); }
+    let settled = false;
+    const fail = () => { if (settled) return; settled = true; clearTimeout(timer); release(); reject(new Error('exportError')); };
+    const timer = setTimeout(fail, 30_000);
+    try { canvas.toBlob(blob => {
+      if (settled) return;
+      settled = true; clearTimeout(timer); release();
+      if (blob?.type === format && blob.size > 0) resolve(blob); else reject(new Error('exportError'));
+    }, format, quality / 100); }
+    catch { fail(); }
   });
 }
 // The decoder chunk and its worker exist only for an actual HEIF upload.

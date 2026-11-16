@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { ChevronRight, Download, ImagePlus, Image as ImageIcon, ShieldCheck, LoaderCircle } from 'lucide-react';
+import { ChevronRight, Download, ImagePlus, Image as ImageIcon, ShieldCheck, LoaderCircle, ExternalLink, Share2, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { copy, langIndex, tools, type Language, type Tool } from '@/lib/photo/content';
 import { resizeCopy } from '@/lib/photo/resize-copy';
@@ -9,6 +9,7 @@ import { convertCopy } from '@/lib/photo/convert-copy';
 import { canProcessOriginal, convertLimits, reducedDimensions, conversionDimensionError, conversionName, decodeHeif, encodeConversion, formatLabel, inspectConversion, type ConvertError, type SourceFormat } from '@/lib/photo/convert';
 import { Shell, ReservedSpace } from './shell';
 import { ToolCard, ToolIcon } from './tool-card';
+import { deliverConversion, isShareCancelled, type DeliveryOutcome } from '@/lib/photo/convert-delivery';
 type Source = { image: HTMLImageElement; url: string; name: string; width: number; height: number; outW: number; outH: number; reduced: boolean; file: File; size: number; format: SourceFormat };
 type Pending = { file: File; width: number; height: number; reduced: { width: number; height: number } };
 const px=(w:number,h:number,lang:string)=>`${w.toLocaleString(lang)} × ${h.toLocaleString(lang)}`;
@@ -25,14 +26,23 @@ export function ConvertWorkspace({ tool, lang, slug }: {tool: Tool; lang: Langua
  const [format,setFormat]=useState<ImageFormat>('image/png'), [quality,setQuality]=useState(90);
  const [result,setResult]=useState<Result>(), [busy,setBusy]=useState(false), [loading,setLoading]=useState(false);
  const [error,setError]=useState<ConvertError>(), [dragging,setDragging]=useState(false), [pending,setPending]=useState<Pending>();
+  const [delivery,setDelivery]=useState<{key:string;status:DeliveryOutcome|'saving'}>();
+  const [retry,setRetry]=useState(0), [shareSupported,setShareSupported]=useState(false);
+  const deliveryId=useRef(0);
  const w=source?.outW ?? 0,h=source?.outH ?? 0;
  const key=`${source?.url}|${w}|${h}|${format}|${format==='image/png'?100:quality}`;
  const current=result?.key===key && !loading ? result : undefined;
+  const deliveryStatus=delivery?.key===key ? delivery.status : undefined;
  function revoke(url:string) {URL.revokeObjectURL(url);urls.current.delete(url);}
- useEffect(()=>()=>{loadId.current++;abortLoad.current?.abort();for(const url of urls.current)URL.revokeObjectURL(url);urls.current.clear();},[]);
+  useEffect(()=>()=>{loadId.current++;deliveryId.current++;abortLoad.current?.abort();for(const url of urls.current)URL.revokeObjectURL(url);urls.current.clear();},[]);
+  useEffect(()=>{
+   setShareSupported(false);
+   if(!current)return;
+   try {setShareSupported(!!navigator.canShare?.({files:[new File([current.blob],conversionName(source?.name ?? 'image',format),{type:current.blob.type})]}));}catch{}
+  },[current,source?.name,format]);
  useEffect(()=>{
   let cancelled=false, outputUrl:string|undefined;
-  setResult(undefined);setBusy(false);
+   setResult(undefined);setBusy(false);setDelivery(undefined);deliveryId.current++;
   if(!source || loading) return;
   setBusy(true);
   const timer=setTimeout(async()=>{
@@ -50,7 +60,7 @@ export function ConvertWorkspace({ tool, lang, slug }: {tool: Tool; lang: Langua
    finally {if(!cancelled)setBusy(false);}
   },250);
   return ()=>{cancelled=true;clearTimeout(timer);if(outputUrl)revoke(outputUrl);};
- },[source,key,loading,format,quality]);
+  },[source,key,loading,format,quality,retry]);
  async function load(file?:File, target?:{width:number;height:number}) {
   if(!file || loading)return;
   setPending(undefined);
@@ -83,11 +93,17 @@ export function ConvertWorkspace({ tool, lang, slug }: {tool: Tool; lang: Langua
   } catch(e) {if(url)revoke(url);if(id===loadId.current)setError(errorCode(e));}
   finally {if(id===loadId.current)setLoading(false);}
  }
- function download() {
+  async function download(shareOnly=false) {
   if(!current)return;
-  const anchor=document.createElement('a');anchor.href=current.url;
-  anchor.download=conversionName(source?.name ?? 'image',format);
-  document.body.appendChild(anchor);anchor.click();anchor.remove();
+   const id=++deliveryId.current;
+   setDelivery({key,status:'saving'});
+   const name=conversionName(source?.name ?? 'image',format);
+   let status:DeliveryOutcome;
+   if(shareOnly){
+    try {await navigator.share({files:[new File([current.blob],name,{type:current.blob.type})],title:name});status='shared';}
+    catch(e){status=isShareCancelled(e)?'cancelled':'saveError';}
+   }else status=await deliverConversion(current.blob,name);
+   if(id===deliveryId.current)setDelivery({key,status});
  }
  const shownError=error;
  return <Shell lang={lang} slug={slug}><main id="main" className="content-width tool-page resize-page">
@@ -115,7 +131,15 @@ export function ConvertWorkspace({ tool, lang, slug }: {tool: Tool; lang: Langua
     </fieldset>
     <p className="settings-hint mt-4">{r.limits}</p><p className="settings-hint mt-4">{r.heicInfo}</p>
     <div aria-live="polite">{shownError && <p role="alert" className="resize-error">{r[shownError]}</p>}</div>
-    <div className="export-section"><h3>{c.export}</h3><Button className="resize-download" disabled={!current || !!shownError || busy} size="lg" onClick={download}>{busy?<LoaderCircle className="animate-spin"/>:<Download/>}{busy?r.processing:r.download}</Button></div>
+     <div className="export-section"><h3>{c.export}</h3><Button className="resize-download" disabled={!current || !!shownError || busy || loading || deliveryStatus==='saving'} size="lg" onClick={()=>void download()}>{busy || loading || deliveryStatus==='saving'?<LoaderCircle className="animate-spin"/>:<Download/>}{busy || loading?r.processing:deliveryStatus==='saving'?r.saving:r.download}</Button>
+      <div role="status" aria-live="polite" aria-atomic="true"><p className="settings-hint mt-3">{busy || loading?r.processing:deliveryStatus?r[deliveryStatus]:current?r.ready:null}</p></div>
+      {shownError && source && !pending && <Button variant="outline" onClick={()=>{setError(undefined);setRetry(n=>n+1);}}><RotateCcw/>{r.retry}</Button>}
+      {current && <div className="mt-3 flex flex-col gap-2">
+       {shareSupported && <Button variant="outline" disabled={deliveryStatus==='saving'} onClick={()=>void download(true)}><Share2/>{r.shareFile}</Button>}
+       <Button variant="outline" asChild><a href={current.url} target="_blank" rel="noopener noreferrer"><ExternalLink/>{r.openFile}</a></Button>
+       <p className="settings-hint">{r.openHint}</p>
+      </div>}
+     </div>
    </aside>
   </div>
   <ReservedSpace lang={lang}/>
