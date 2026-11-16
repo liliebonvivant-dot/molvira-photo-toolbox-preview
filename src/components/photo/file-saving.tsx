@@ -7,7 +7,7 @@ import { deliverConversion, type DeliveryOutcome } from '@/lib/photo/convert-del
 
 type Result = { blob: Blob; url: string; key: string };
 export function FileSaving({ lang, result, filename, title, label, processing, busy, disabled }: {
-  lang: Language; result?: Result; filename: string; title: string; label: string;
+  lang: Language; result: Result | undefined; filename: string; title: string; label: string;
   processing: string; busy: boolean; disabled: boolean;
 }) {
   const r = savingCopy[lang], id = useRef(0);
