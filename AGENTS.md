@@ -34,6 +34,7 @@ use the editor.
 - Keep unapproved tool workspaces presentation-only; resize, crop/rotate and conversion are the approved local processors.
 - Isolate conversion UI and localization from header validation and Canvas encoding that preserves dimensions unless the user explicitly picks the offered proportional reduction (device pixel-budget + canvas probe decide); use an on-demand, owned HEIF worker with timeout and termination to avoid blocking the interface or retaining decoder memory.
 - Isolate resize UI, localization and native Canvas logic; validate encoded headers before decoding and release object URLs and canvas memory after use.
+- Resize and crop share large-image decoding (large-image.ts + reduce-prompt.tsx) built on the conversion pixel-budget/canvas probe; a reduced working copy is created only after explicit user choice, and export failures offer that reduction instead of failing silently.
 - Use react-image-crop for touch/keyboard selection and numeric affine transforms with clipping polygons for crop history; render from the original once to avoid cumulative quality loss and bound history to 30 steps.
 - Store only the language preference in browser storage; image data must not be persisted by this preview.
 - Keep international metadata on content leaves and exclude development pages from indexing; resolve sitemap locations to the approved absolute domain before launch.
