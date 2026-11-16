@@ -9,7 +9,7 @@
 - [x] Verify all languages and responsive layouts; report platform limitations without publishing.
 
 ## Phase 2.1 — Resize Images only
-- [ ] Implement local upload, dimensions, presets, previews and export in three languages.
-- [ ] Validate file headers, dimensions and memory limits; release temporary resources.
-- [ ] Test formats, transparency, orientation, invalid inputs, languages and mobile layouts.
-- [ ] Report results and limitations without publishing or enabling other tools.
+- [x] Implement local upload, dimensions, presets, previews and export in three languages.
+- [x] Validate file headers, dimensions and memory limits; release temporary resources.
+- [x] Test formats, transparency, orientation, invalid inputs, languages and mobile layouts.
+- [x] Report results and limitations without publishing or enabling other tools.
