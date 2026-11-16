@@ -7,3 +7,9 @@
 - [x] Remove homepage search and category filters while preserving the ordered catalog.
 - [x] Prepare official browser/device icons and verify available Lovable dashboard settings.
 - [x] Verify all languages and responsive layouts; report platform limitations without publishing.
+
+## Phase 2.1 — Resize Images only
+- [x] Implement local upload, dimensions, presets, previews and export in three languages.
+- [x] Validate file headers, dimensions and memory limits; release temporary resources.
+- [x] Test formats, transparency, orientation, invalid inputs, languages and mobile layouts.
+- [x] Report results and limitations without publishing or enabling other tools.

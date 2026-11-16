@@ -31,6 +31,7 @@ use the editor.
 
 ## Application architecture
 - Use a shared localized catalog and validated language/slug routes for all tool and institutional pages so language switching preserves page identity.
-- Keep Phase 1 workspaces presentation-only with disabled upload, editing, processing and export controls so no unavailable operation appears functional.
+- Keep unapproved tool workspaces presentation-only; only the approved resize workspace exposes local image processing.
+- Isolate resize UI, localization and native Canvas logic; validate encoded headers before decoding and release object URLs and canvas memory after use.
 - Store only the language preference in browser storage; image data must not be persisted by this preview.
 - Keep international metadata on content leaves and exclude development pages from indexing; resolve sitemap locations to the approved absolute domain before launch.
