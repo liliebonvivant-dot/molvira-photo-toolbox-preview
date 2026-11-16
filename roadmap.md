@@ -25,5 +25,6 @@
 - [x] Deliver the phase report with tested support and limitations; do not publish or start another tool.
 
 ## Convert & Download — iOS saving
-- [ ] Correct silent delivery, add truthful status and user-activated save/share alternatives in EN/PT/ES.
-- [ ] Verify reduced JPG → PNG/WebP/JPG files, blocked downloads, errors and existing conversion tests; report Apple-device limits without publishing.
+- [x] Correct silent delivery, add truthful status and user-activated save/share alternatives in EN/PT/ES.
+- [x] Verify reduced JPG → PNG/WebP/JPG files, blocked downloads, errors and existing conversion tests; report Apple-device limits without publishing.
+- [ ] Validate native sharing and Save to Files on physical iPhone/iPad with the owner's original photo (requires a physical Apple device and that photo).
