@@ -13,3 +13,8 @@
 - [x] Validate file headers, dimensions and memory limits; release temporary resources.
 - [x] Test formats, transparency, orientation, invalid inputs, languages and mobile layouts.
 - [x] Report results and limitations without publishing or enabling other tools.
+
+## Phase 2.2 — Crop & Rotate Images only
+- [x] Implement local interactive crop, rotation, mirroring, bounded history and export in three languages.
+- [x] Verify formats, emulated touch, transparency, download correspondence, metadata and resize regression.
+- [x] Deliver an honest phase report; do not publish or activate other tools.
