@@ -6,10 +6,12 @@ import { copy, langIndex, tools, type Language, type Tool } from '@/lib/photo/co
 import { resizeCopy } from '@/lib/photo/resize-copy';
 import type { ImageFormat } from '@/lib/photo/resize';
 import { convertCopy } from '@/lib/photo/convert-copy';
-import { conversionDimensionError, conversionName, decodeHeif, encodeConversion, formatLabel, inspectConversion, type ConvertError, type SourceFormat } from '@/lib/photo/convert';
+import { canProcessOriginal, convertLimits, reducedDimensions, conversionDimensionError, conversionName, decodeHeif, encodeConversion, formatLabel, inspectConversion, type ConvertError, type SourceFormat } from '@/lib/photo/convert';
 import { Shell, ReservedSpace } from './shell';
 import { ToolCard, ToolIcon } from './tool-card';
-type Source = { image: HTMLImageElement; url: string; name: string; width: number; height: number; size: number; format: SourceFormat };
+type Source = { image: HTMLImageElement; url: string; name: string; width: number; height: number; outW: number; outH: number; reduced: boolean; file: File; size: number; format: SourceFormat };
+type Pending = { file: File; width: number; height: number; reduced: { width: number; height: number } };
+const px=(w:number,h:number,lang:string)=>`${w.toLocaleString(lang)} × ${h.toLocaleString(lang)}`;
 type Result = { blob: Blob; url: string; key: string };
 function errorCode(error: unknown): ConvertError {
  const code=error instanceof Error ? error.message : '';
@@ -22,8 +24,8 @@ export function ConvertWorkspace({ tool, lang, slug }: {tool: Tool; lang: Langua
  const abortLoad=useRef<AbortController | undefined>(undefined);
  const [format,setFormat]=useState<ImageFormat>('image/png'), [quality,setQuality]=useState(90);
  const [result,setResult]=useState<Result>(), [busy,setBusy]=useState(false), [loading,setLoading]=useState(false);
- const [error,setError]=useState<ConvertError>(), [dragging,setDragging]=useState(false);
- const w=source?.width ?? 0,h=source?.height ?? 0;
+ const [error,setError]=useState<ConvertError>(), [dragging,setDragging]=useState(false), [pending,setPending]=useState<Pending>();
+ const w=source?.outW ?? 0,h=source?.outH ?? 0;
  const key=`${source?.url}|${w}|${h}|${format}|${format==='image/png'?100:quality}`;
  const current=result?.key===key && !loading ? result : undefined;
  function revoke(url:string) {URL.revokeObjectURL(url);urls.current.delete(url);}
@@ -35,31 +37,38 @@ export function ConvertWorkspace({ tool, lang, slug }: {tool: Tool; lang: Langua
   setBusy(true);
   const timer=setTimeout(async()=>{
    try {
-    const blob=await encodeConversion(source.image,format,quality);
+    const blob=await encodeConversion(source.image,format,quality,source.outW,source.outH);
     if(cancelled)return;
     outputUrl=URL.createObjectURL(blob);urls.current.add(outputUrl);
     setResult({blob,url:outputUrl,key});
-   } catch(e) {if(!cancelled)setError(errorCode(e));}
+   } catch(e) {
+     if(cancelled)return;
+     // A full-resolution encode failing on this device offers, never applies, a reduction.
+     if(!source.reduced && source.outW*source.outH>convertLimits.compatiblePixels)setPending({file:source.file,width:source.width,height:source.height,reduced:reducedDimensions(source.width,source.height)});
+     else setError(errorCode(e));
+    }
    finally {if(!cancelled)setBusy(false);}
   },250);
   return ()=>{cancelled=true;clearTimeout(timer);if(outputUrl)revoke(outputUrl);};
  },[source,key,loading,format,quality]);
- async function load(file?:File) {
+ async function load(file?:File, target?:{width:number;height:number}) {
   if(!file || loading)return;
+  setPending(undefined);
   abortLoad.current?.abort();
   const controller=new AbortController();abortLoad.current=controller;
   const id=++loadId.current;setLoading(true);setError(undefined);
   let url:string|undefined;
   try {
    const header=await inspectConversion(file);
-   if(id!==loadId.current)return;
+    if(id!==loadId.current)return;
+   if(!target && !canProcessOriginal(header.width,header.height)){setPending({file,width:header.width,height:header.height,reduced:reducedDimensions(header.width,header.height)});return;}
    url=URL.createObjectURL(file);urls.current.add(url);
    let image=new window.Image();image.src=url;
    try {await image.decode();}
    catch {
     if(header.format!=='image/heic' && header.format!=='image/heif')throw new Error('decode');
     revoke(url);url=undefined;
-    const decoded=await decodeHeif(file,controller.signal);
+    const decoded=await decodeHeif(file,controller.signal,target);
     if(id!==loadId.current)return;
     url=URL.createObjectURL(decoded);urls.current.add(url);
     image=new window.Image();image.src=url;await image.decode();
@@ -67,8 +76,9 @@ export function ConvertWorkspace({ tool, lang, slug }: {tool: Tool; lang: Langua
    if(id!==loadId.current){if(url)revoke(url);return;}
    const iw=image.naturalWidth,ih=image.naturalHeight;
    if(conversionDimensionError(iw,ih))throw new Error('inputLimit');
+   const out=target?reducedDimensions(iw,ih):{width:iw,height:ih};
    if(source)revoke(source.url);
-   setSource({image,url,name:file.name,width:iw,height:ih,size:file.size,format:header.format});
+   setSource({image,url,name:file.name,width:target?header.width:iw,height:target?header.height:ih,outW:out.width,outH:out.height,reduced:!!target,file,size:file.size,format:header.format});
    setFormat(header.format==='image/heic'||header.format==='image/heif'?'image/jpeg':header.format);setQuality(90);
   } catch(e) {if(url)revoke(url);if(id===loadId.current)setError(errorCode(e));}
   finally {if(id===loadId.current)setLoading(false);}
@@ -91,7 +101,8 @@ export function ConvertWorkspace({ tool, lang, slug }: {tool: Tool; lang: Langua
      <input ref={input} type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" className="sr-only" aria-label={c.choose} tabIndex={-1} onChange={e=>{void load(e.target.files?.[0]);e.target.value='';}}/>
      <Button size="lg" disabled={loading} onClick={()=>input.current?.click()}>{loading?<LoaderCircle className="animate-spin"/>:<ImagePlus/>}{loading?r.processing:source?r.another:c.choose}</Button><small>{r.formats}</small>
     </section>
-    {source && <section className="preview-section"><h2>{r.original} · {source.width} × {source.height} px</h2><div className="resize-image-frame"><img src={source.url} alt={r.original}/></div><p className="resize-filename">{source.name} · {formatLabel(source.format)} · {(source.size/1024).toLocaleString(lang,{maximumFractionDigits:1})} KiB</p></section>}
+     {pending && <section className="preview-section" role="alert"><div className="phase-notice"><ShieldCheck size={18}/><div><p>{r.tooLarge.replace('{o}',px(pending.width,pending.height,lang))}</p><p>{r.reduceAsk}</p><p>{r.originalRes}: {px(pending.width,pending.height,lang)} px · {r.outputRes}: {px(pending.reduced.width,pending.reduced.height,lang)} px</p><div className="mt-3 flex flex-wrap gap-2"><Button onClick={()=>void load(pending.file,pending.reduced)}>{r.reduceTo.replace('{r}',px(pending.reduced.width,pending.reduced.height,lang))}</Button><Button variant="outline" onClick={()=>setPending(undefined)}>{r.cancelReduce}</Button></div></div></div></section>}
+     {source && <section className="preview-section"><h2>{r.original} · {px(source.width,source.height,lang)} px</h2><div className="resize-image-frame"><img src={source.url} alt={r.original}/></div><p className="resize-filename">{source.name} · {formatLabel(source.format)} · {(source.size/1024).toLocaleString(lang,{maximumFractionDigits:1})} KiB</p></section>}
     <section className="preview-section"><h2>{r.result}{current?` · ${w} × ${h} px`:''}</h2><div className="resize-image-frame" aria-live="polite">{current?<img src={current.url} alt={r.result}/>:<div className="resize-empty">{busy || loading?<LoaderCircle className="animate-spin" size={30}/>:<ImageIcon size={40} strokeWidth={1}/>}<p>{busy || loading?r.processing:r.empty}</p></div>}</div>{current && <p className="resize-file-size">{r.actual}: {(current.blob.size/1024).toLocaleString(lang,{maximumFractionDigits:1})} KiB · {format==='image/jpeg'?'JPG':format==='image/png'?'PNG':'WebP'}</p>}</section>
    </div>
    <aside className="settings-panel"><div className="panel-heading"><h2>{c.settings}</h2></div>
@@ -99,7 +110,8 @@ export function ConvertWorkspace({ tool, lang, slug }: {tool: Tool; lang: Langua
      <label className="setting-field"><span>{c.source}</span><input aria-label={c.source} readOnly value={source?formatLabel(source.format):c.auto}/></label>
      <label className="setting-field"><span>{c.output}</span><select aria-label={c.output} value={format} onChange={e=>{setFormat(e.target.value as ImageFormat);setError(undefined);}}><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></select></label>
      {format!=='image/png' && <label className="setting-field"><span>{r.quality}<small>{quality}%</small></span><input aria-label={r.quality} type="range" min={1} max={100} value={quality} onChange={e=>{setQuality(Number(e.target.value));setError(undefined);}}/></label>}
-     <p className="settings-hint">{r.qualityInfo}</p>
+     {source && <p className="settings-hint">{r.originalRes}: {px(source.width,source.height,lang)} px<br/>{r.outputRes}: {px(source.outW,source.outH,lang)} px{source.reduced?<><br/>{r.reducedNote}</>:null}</p>}
+      <p className="settings-hint">{r.qualityInfo}</p>
     </fieldset>
     <p className="settings-hint mt-4">{r.limits}</p><p className="settings-hint mt-4">{r.heicInfo}</p>
     <div aria-live="polite">{shownError && <p role="alert" className="resize-error">{r[shownError]}</p>}</div>
