@@ -18,6 +18,7 @@ describe('local conversion rules',()=>{
  it('limits regular files to 20 MiB before reading',async()=>{await expect(inspectConversion({size:20*1024*1024+1} as File)).rejects.toThrow('fileSize');});
  it('limits HEIF files to 10 MiB',async()=>{await expect(inspectConversion({size:10*1024*1024+1,arrayBuffer:async()=>heif().buffer} as File)).rejects.toThrow('fileSize');});
  it('rejects oversized HEIC before allocating a decoder',async()=>{await expect(inspectConversion({size:72,arrayBuffer:async()=>heif(5000,4000).buffer} as File)).rejects.toThrow('inputLimit');});
+ it('does not decode HEIF with unverifiable dimensions',async()=>{await expect(inspectConversion({size:72,arrayBuffer:async()=>heif(0,0).buffer} as File)).rejects.toThrow('heicError');});
  it('allows 16 megapixels without resizing',()=>expect(conversionDimensionError(4000,4000)).toBe(false));
  it('rejects over 16 megapixels',()=>expect(conversionDimensionError(4000,4001)).toBe(true));
  it('limits each side to 8192',()=>expect(conversionDimensionError(8193,1)).toBe(true));

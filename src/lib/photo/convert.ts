@@ -48,7 +48,8 @@ export async function inspectConversion(file: File) {
   if (!header) throw new Error('fileType');
   const heif = header.format === 'image/heic' || header.format === 'image/heif';
   if (heif && file.size > convertLimits.heicBytes) throw new Error('fileSize');
-  if ((!heif || header.width || header.height) && conversionDimensionError(header.width, header.height)) throw new Error('inputLimit');
+  if (heif && (!header.width || !header.height)) throw new Error('heicError');
+  if (conversionDimensionError(header.width, header.height)) throw new Error('inputLimit');
   return header;
 }
 export function encodeConversion(image: HTMLImageElement, format: ImageFormat, quality: number): Promise<Blob> {

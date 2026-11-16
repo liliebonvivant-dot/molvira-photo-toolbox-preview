@@ -96,8 +96,8 @@ export function ConvertWorkspace({ tool, lang, slug }: {tool: Tool; lang: Langua
    </div>
    <aside className="settings-panel"><div className="panel-heading"><h2>{c.settings}</h2></div>
     <fieldset disabled={!source || loading} className="resize-fields">
-     <label className="setting-field"><span>{c.source}</span><input readOnly value={source?formatLabel(source.format):c.auto}/></label>
-     <label className="setting-field"><span>{c.output}</span><select value={format} onChange={e=>{setFormat(e.target.value as ImageFormat);setError(undefined);}}><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></select></label>
+     <label className="setting-field"><span>{c.source}</span><input aria-label={c.source} readOnly value={source?formatLabel(source.format):c.auto}/></label>
+     <label className="setting-field"><span>{c.output}</span><select aria-label={c.output} value={format} onChange={e=>{setFormat(e.target.value as ImageFormat);setError(undefined);}}><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></select></label>
      {format!=='image/png' && <label className="setting-field"><span>{r.quality}<small>{quality}%</small></span><input aria-label={r.quality} type="range" min={1} max={100} value={quality} onChange={e=>{setQuality(Number(e.target.value));setError(undefined);}}/></label>}
      <p className="settings-hint">{r.qualityInfo}</p>
     </fieldset>
