@@ -14,10 +14,10 @@ const en = {
   heicInfo: 'HEIC/HEIF is tried natively first, then with a local decoder loaded only when needed. Compatibility varies by file and device. Only the primary still image is converted; animation, HDR, depth and metadata are not preserved.',
   how: 'How to convert JPG, PNG, WebP and HEIC images', first: 'Choose your image', firstDesc: 'Open a file or drop it here. The format, dimensions and original file size are detected automatically.',
   second: 'Choose the output format', secondDesc: 'Select JPG, PNG or WebP. Adjust JPG or WebP quality and compare the actual encoded preview and file size.',
-  third: 'Review and download', thirdDesc: 'Download the previewed file with its matching extension. Pixel dimensions remain unchanged; no image is sent to a server.',
+  third: 'Review and download', thirdDesc: 'Download the previewed file with its matching extension. Pixel dimensions remain unchanged unless you chose the offered reduction; no image is sent to a server.',
   faq1: 'Does converting JPG to PNG improve quality?', answer1: 'No. PNG avoids additional lossy encoding, but cannot recover detail previously lost in a JPG. File size may increase.',
   faq2: 'Can I convert iPhone HEIC photos?', answer2: 'Compatible HEIC/HEIF files can be decoded locally and exported as JPG, PNG or WebP. Some codecs, HDR variants or files may not work. A clear error is shown instead of a simulated result. HEIC output is not offered.',
-  faq3: 'Are transparency and dimensions preserved?', answer3: 'PNG and WebP retain supported transparency. JPG uses a white background. The displayed, orientation-corrected pixel dimensions are preserved. Color profiles and other metadata are not copied.',
+  faq3: 'Are transparency and dimensions preserved?', answer3: 'PNG and WebP retain supported transparency. JPG uses a white background. The displayed, orientation-corrected pixel dimensions are preserved unless you explicitly choose a reduced resolution. Color profiles and other metadata are not copied.',
   metadata: 'Convert JPG/JPEG, PNG and WebP images locally for free. Open compatible HEIC/HEIF files, preserve dimensions, preview real file sizes and download.',
 };
 export const convertCopy: Record<Language, typeof en> = {
@@ -37,7 +37,7 @@ export const convertCopy: Record<Language, typeof en> = {
     heicInfo: 'HEIC/HEIF é aberto primeiro pelo navegador e, se necessário, por um decodificador local carregado sob demanda. A compatibilidade depende do arquivo e do dispositivo. Somente a imagem estática principal é convertida; animação, HDR, profundidade e metadados não são preservados.',
     how: 'Como converter imagens JPG, PNG, WebP e HEIC', first: 'Escolha sua imagem', firstDesc: 'Abra um arquivo ou arraste-o para cá. O formato, as dimensões e o tamanho original são identificados automaticamente.',
     second: 'Escolha o formato de saída', secondDesc: 'Selecione JPG, PNG ou WebP. Ajuste a qualidade de JPG ou WebP e compare a prévia realmente exportada e o tamanho do arquivo.',
-    third: 'Confira e baixe', thirdDesc: 'Baixe o arquivo da prévia com a extensão correspondente. As dimensões em pixels não mudam; nenhuma imagem é enviada a servidores.',
+    third: 'Confira e baixe', thirdDesc: 'Baixe o arquivo da prévia com a extensão correspondente. As dimensões em pixels não mudam, salvo se você escolher a redução oferecida; nenhuma imagem é enviada a servidores.',
     faq1: 'Converter JPG para PNG melhora a qualidade?', answer1: 'Não. PNG evita novas perdas de codificação, mas não recupera detalhes perdidos anteriormente no JPG. O arquivo pode ficar maior.',
     faq2: 'Posso converter fotos HEIC do iPhone?', answer2: 'Arquivos HEIC/HEIF compatíveis podem ser abertos localmente e exportados como JPG, PNG ou WebP. Alguns codecs, variantes HDR ou arquivos podem não funcionar. Uma mensagem clara aparece em vez de um resultado simulado. Não oferecemos saída HEIC.',
     faq3: 'A transparência e as dimensões são preservadas?', answer3: 'PNG e WebP mantêm a transparência compatível. JPG usa fundo branco. As dimensões exibidas, corrigidas conforme a orientação, são preservadas. Perfis de cor e outros metadados não são copiados.',
