@@ -30,6 +30,6 @@
 - [ ] Validate native sharing and Save to Files on physical iPhone/iPad with the owner's original photo (requires a physical Apple device and that photo).
 
 ## Resize and Crop saving — approved follow-up
-- [ ] Reuse delivery feedback and manual open/share alternatives, retaining existing primary downloads and editing behavior.
-- [ ] Verify all three processors in EN/PT/ES, reduced images, valid downloads, errors and editing regressions without publishing.
+- [x] Reuse delivery feedback and manual open/share alternatives, retaining existing primary downloads and editing behavior.
+- [x] Verify all three processors in EN/PT/ES, reduced images, valid downloads, errors and editing regressions without publishing.
 - [ ] Await the owner's manual iPhone validation (requires a physical Apple device).
