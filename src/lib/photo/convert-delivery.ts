@@ -1,4 +1,7 @@
 export type DeliveryOutcome = 'shared' | 'cancelled' | 'downloadStarted' | 'saveError';
+export function isShareCancelled(error: unknown): boolean {
+  return typeof error === 'object' && error !== null && 'name' in error && error.name === 'AbortError';
+}
 
 // Called directly by a gesture with an already encoded file: no await before share/click.
 export async function deliverConversion(blob: Blob, filename: string): Promise<DeliveryOutcome> {
@@ -9,7 +12,7 @@ export async function deliverConversion(blob: Blob, filename: string): Promise<D
         await navigator.share({ files: [file], title: filename });
         return 'shared';
       } catch (error) {
-        return error instanceof Error && error.name === 'AbortError' ? 'cancelled' : 'saveError';
+        return isShareCancelled(error) ? 'cancelled' : 'saveError';
       }
     }
     const url = URL.createObjectURL(blob);

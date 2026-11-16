@@ -9,7 +9,7 @@ import { convertCopy } from '@/lib/photo/convert-copy';
 import { canProcessOriginal, convertLimits, reducedDimensions, conversionDimensionError, conversionName, decodeHeif, encodeConversion, formatLabel, inspectConversion, type ConvertError, type SourceFormat } from '@/lib/photo/convert';
 import { Shell, ReservedSpace } from './shell';
 import { ToolCard, ToolIcon } from './tool-card';
-import { deliverConversion, type DeliveryOutcome } from '@/lib/photo/convert-delivery';
+import { deliverConversion, isShareCancelled, type DeliveryOutcome } from '@/lib/photo/convert-delivery';
 type Source = { image: HTMLImageElement; url: string; name: string; width: number; height: number; outW: number; outH: number; reduced: boolean; file: File; size: number; format: SourceFormat };
 type Pending = { file: File; width: number; height: number; reduced: { width: number; height: number } };
 const px=(w:number,h:number,lang:string)=>`${w.toLocaleString(lang)} × ${h.toLocaleString(lang)}`;
@@ -101,7 +101,7 @@ export function ConvertWorkspace({ tool, lang, slug }: {tool: Tool; lang: Langua
    let status:DeliveryOutcome;
    if(shareOnly){
     try {await navigator.share({files:[new File([current.blob],name,{type:current.blob.type})],title:name});status='shared';}
-    catch(e){status=e instanceof Error && e.name==='AbortError'?'cancelled':'saveError';}
+    catch(e){status=isShareCancelled(e)?'cancelled':'saveError';}
    }else status=await deliverConversion(current.blob,name);
    if(id===deliveryId.current)setDelivery({key,status});
  }
