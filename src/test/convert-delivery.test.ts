@@ -17,7 +17,9 @@ describe('conversion file delivery', () => {
     const blob = new Blob(['encoded-png'], { type: 'image/png' });
     const pending = deliverConversion(blob, 'photo-converted.png');
     expect(share).toHaveBeenCalledTimes(1);
-    const file = share.mock.calls[0][0].files[0];
+    const call = share.mock.calls[0];
+    if (!call) throw new Error('Sharing was not invoked');
+    const file = call[0].files[0];
     expect([file.name, file.type, file.size]).toEqual(['photo-converted.png', 'image/png', 11]);
     expect(await pending).toBe('shared');
     expect(click).not.toHaveBeenCalled();
