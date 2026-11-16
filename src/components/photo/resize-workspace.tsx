@@ -10,6 +10,7 @@ import { decodeLocal, fallbackOffer, type ReduceOffer, type Size } from '@/lib/p
 import { ReducePrompt, ResolutionNote } from './reduce-prompt';
 import { Shell, ReservedSpace } from './shell';
 import { ToolCard, ToolIcon } from './tool-card';
+import { FileSaving } from './file-saving';
 type Source = { image: HTMLImageElement; url: string; name: string; width: number; height: number; file: File; originalWidth: number; originalHeight: number; reduced: boolean };
 type Result = { blob: Blob; url: string; key: string };
 function errorCode(error: unknown): ResizeError {
@@ -75,13 +76,8 @@ export function ResizeWorkspace({ tool, lang, slug }: {tool: Tool; lang: Languag
   if(!source || value==='custom')return;
   const dims=presetDimensions(source.width,source.height,Number(value));setWidth(String(dims.width));setHeight(String(dims.height));
  }
- function download() {
-  if(!current)return;
-  const anchor=document.createElement('a');anchor.href=current.url;
-  const name=(source?.name.replace(/\.[^.]+$/,'') || 'image').replace(/[<>:"/\\|?*\u0000-\u001f]/g,'_');
-  anchor.download=`${name}-${w}x${h}.${format==='image/jpeg'?'jpg':format==='image/png'?'png':'webp'}`;
-  document.body.appendChild(anchor);anchor.click();anchor.remove();
- }
+ const name=(source?.name.replace(/\.[^.]+$/,'') || 'image').replace(/[<>:"/\\|?*\u0000-\u001f]/g,'_');
+ const filename=`${name}-${w}x${h}.${format==='image/jpeg'?'jpg':format==='image/png'?'png':'webp'}`;
  const shownError=error || validation;
  return <Shell lang={lang} slug={slug}><main id="main" className="content-width tool-page resize-page">
   <nav className="breadcrumbs"><Link to="/$lang" params={{lang}}>{c.home}</Link><ChevronRight size={13}/><span>{tool.titles[langIndex(lang)]}</span></nav>
@@ -111,7 +107,7 @@ export function ResizeWorkspace({ tool, lang, slug }: {tool: Tool; lang: Languag
     {source && <ResolutionNote source={source} lang={lang}/>}
     <p className="settings-hint">{r.limits}</p>
     <div aria-live="polite">{shownError && <p role="alert" className="resize-error">{r[shownError]}</p>}</div>
-    <div className="export-section"><h3>{c.export}</h3><Button className="resize-download" disabled={!current || !!shownError || busy} size="lg" onClick={download}>{busy?<LoaderCircle className="animate-spin"/>:<Download/>}{busy?r.processing:r.download}</Button></div>
+    <FileSaving lang={lang} result={current} filename={filename} title={c.export} label={r.download} processing={r.processing} busy={busy || loading} disabled={!current || !!shownError}/>
    </aside>
   </div>
   <ReservedSpace lang={lang}/>

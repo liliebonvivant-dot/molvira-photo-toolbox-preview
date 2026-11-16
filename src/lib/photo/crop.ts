@@ -1,4 +1,5 @@
 import { dimensionError, type ImageFormat } from './resize';
+import { canvasBlob } from './canvas-blob';
 export type Point = { x: number; y: number };
 export type Matrix = [number, number, number, number, number, number];
 export type Edit = { width: number; height: number; matrix: Matrix; clips: Point[][] };
@@ -40,6 +41,6 @@ export function renderEdit(image: HTMLImageElement, edit: Edit, canvas: HTMLCanv
 export async function exportEdit(image: HTMLImageElement, edit: Edit, format: ImageFormat, quality:number): Promise<Blob> {
  const error=dimensionError(edit.width,edit.height);if(error)throw new Error(error);
  const canvas=document.createElement('canvas');
- try { renderEdit(image,edit,canvas,false,format==='image/jpeg');return await new Promise<Blob>((resolve,reject)=>canvas.toBlob(blob=>blob?.type===format?resolve(blob):reject(new Error('exportError')),format,quality/100)); }
+ try { renderEdit(image,edit,canvas,false,format==='image/jpeg');return await canvasBlob(canvas,format,quality); }
  finally {canvas.width=0;canvas.height=0;}
 }

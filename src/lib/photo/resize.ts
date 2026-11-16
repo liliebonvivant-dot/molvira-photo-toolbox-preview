@@ -1,3 +1,4 @@
+import { canvasBlob } from './canvas-blob';
 export type ImageFormat = 'image/jpeg' | 'image/png' | 'image/webp';
 export const resizeLimits = { fileBytes: 20 * 1024 * 1024, side: 12_000, pixels: 50_000_000 };
 export type ResizeError = 'fileType' | 'fileSize' | 'decode' | 'inputLimit' | 'dimensions' | 'outputLimit' | 'exportError';
@@ -61,8 +62,10 @@ export function exportCanvas(image: HTMLImageElement, width: number, height: num
   const context=canvas.getContext('2d');
   if(!context) {canvas.width=0;canvas.height=0;return Promise.reject(new Error('exportError'));}
   // JPEG has no alpha channel. This is an encoding rule, not a UI color.
-  if(format==='image/jpeg') {context.fillStyle='#ffffff';context.fillRect(0,0,width,height);}
-  context.imageSmoothingEnabled=true; context.imageSmoothingQuality='high';
-  context.drawImage(image,0,0,width,height);
-  return new Promise((resolve,reject)=>canvas.toBlob(blob=>{canvas.width=0;canvas.height=0;if(blob?.type===format) resolve(blob);else reject(new Error('exportError'));},format,quality/100));
+  try {
+    if(format==='image/jpeg') {context.fillStyle='#ffffff';context.fillRect(0,0,width,height);}
+    context.imageSmoothingEnabled=true; context.imageSmoothingQuality='high';
+    context.drawImage(image,0,0,width,height);
+  } catch {canvas.width=0;canvas.height=0;return Promise.reject(new Error('exportError'));}
+  return canvasBlob(canvas,format,quality);
 }

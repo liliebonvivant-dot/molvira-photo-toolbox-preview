@@ -1,4 +1,5 @@
 import { imageHeader, validDimensions, type ImageFormat } from './resize';
+import { canvasBlob } from './canvas-blob';
 
 export type SourceFormat = ImageFormat | 'image/heic' | 'image/heif';
 export type ConvertError = 'fileType' | 'fileSize' | 'decode' | 'inputLimit' | 'exportError' | 'heicError';
@@ -96,17 +97,7 @@ export function encodeConversion(image: HTMLImageElement, format: ImageFormat, q
     if (width === image.naturalWidth && height === image.naturalHeight) context.drawImage(image, 0, 0);
     else { context.imageSmoothingQuality = 'high'; context.drawImage(image, 0, 0, width, height); }
   } catch { release(); return Promise.reject(new Error('exportError')); }
-  return new Promise((resolve, reject) => {
-    let settled = false;
-    const fail = () => { if (settled) return; settled = true; clearTimeout(timer); release(); reject(new Error('exportError')); };
-    const timer = setTimeout(fail, 30_000);
-    try { canvas.toBlob(blob => {
-      if (settled) return;
-      settled = true; clearTimeout(timer); release();
-      if (blob?.type === format && blob.size > 0) resolve(blob); else reject(new Error('exportError'));
-    }, format, quality / 100); }
-    catch { fail(); }
-  });
+  return canvasBlob(canvas,format,quality);
 }
 // The decoder chunk and its worker exist only for an actual HEIF upload.
 export function decodeHeif(file: File, signal: AbortSignal, target?: { width: number; height: number }): Promise<Blob> {
