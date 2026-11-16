@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { dimensionError, imageHeader, inspectImage, presetDimensions, proportionalDimension, resizeLimits } from '@/lib/photo/resize';
 describe('local resize rules',()=>{
- for(const [percent,w,h] of [[25,100,50],[50,200,100],[75,300,150],[200,800,400]])it(`uses ${percent}% of original dimensions`,()=>expect(presetDimensions(400,200,percent)).toEqual({width:w,height:h}));
+ for(const [percent,w,h] of [[25,100,50],[50,200,100],[75,300,150],[200,800,400]] as const)it(`uses ${percent}% of original dimensions`,()=>expect(presetDimensions(400,200,percent)).toEqual({width:w,height:h}));
  it('updates the other dimension proportionally',()=>expect(proportionalDimension(300,400,200)).toBe(150));
  it('permits independent dimensions',()=>expect(dimensionError(301,177)).toBeUndefined());
  it.each([[0,10],[-1,10],[10,0],[1.5,10],[NaN,10],[Infinity,10]])('rejects invalid dimensions %s × %s',(w,h)=>expect(dimensionError(w,h)).toBe('dimensions'));

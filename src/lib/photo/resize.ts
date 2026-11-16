@@ -7,6 +7,7 @@ export function validDimensions(width: number, height: number): boolean {
 export function dimensionError(width: number, height: number, inputPixels = 0): ResizeError | undefined {
   if (!validDimensions(width, height)) return 'dimensions';
   if (width > resizeLimits.side || height > resizeLimits.side || width * height > resizeLimits.outputPixels || width * height + inputPixels > resizeLimits.combinedPixels) return 'outputLimit';
+  return undefined;
 }
 export function proportionalDimension(value: number, sourceAxis: number, otherAxis: number) {
   return Math.max(1, Math.round(value * otherAxis / sourceAxis));
@@ -22,7 +23,7 @@ export function imageHeader(bytes: Uint8Array): { format: ImageFormat; width: nu
   }
   if (bytes.length >= 30 && String.fromCharCode(...bytes.slice(0,4)) === 'RIFF' && String.fromCharCode(...bytes.slice(8,12)) === 'WEBP') {
     const chunk = String.fromCharCode(...bytes.slice(12,16));
-    if (chunk === 'VP8X') return { format: 'image/webp', width: 1 + bytes[24] + bytes[25]*256 + bytes[26]*65536, height: 1 + bytes[27] + bytes[28]*256 + bytes[29]*65536 };
+    if (chunk === 'VP8X') return { format: 'image/webp', width: 1 + view.getUint8(24) + view.getUint8(25)*256 + view.getUint8(26)*65536, height: 1 + view.getUint8(27) + view.getUint8(28)*256 + view.getUint8(29)*65536 };
     if (chunk === 'VP8 ' && bytes[23]===157 && bytes[24]===1 && bytes[25]===42) return { format: 'image/webp', width: view.getUint16(26,true)&16383, height: view.getUint16(28,true)&16383 };
     if (chunk === 'VP8L' && bytes[20]===47) { const bits=view.getUint32(21,true); return { format:'image/webp', width: (bits&16383)+1, height: ((bits>>>14)&16383)+1 }; }
   }
@@ -32,6 +33,7 @@ export function imageHeader(bytes: Uint8Array): { format: ImageFormat; width: nu
       if(bytes[offset++]!==255) return;
       while(bytes[offset]===255) offset++;
       const marker=bytes[offset++];
+      if(marker===undefined) return undefined;
       if(marker===217 || marker===218) return;
       if(marker===1 || marker>=208&&marker<=215) continue;
       if(offset+2>bytes.length) return;
@@ -41,6 +43,7 @@ export function imageHeader(bytes: Uint8Array): { format: ImageFormat; width: nu
       offset+=length;
     }
   }
+  return undefined;
 }
 export async function inspectImage(file: File) {
   if(file.size > resizeLimits.fileBytes) throw new Error('fileSize');
