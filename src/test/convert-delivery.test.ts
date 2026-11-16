@@ -12,6 +12,19 @@ function setup(touch = false) {
   return { share, click, create, revoke };
 }
 describe('conversion file delivery', () => {
+  it('preserves the primary anchor download on touch devices when explicitly requested', async () => {
+    const { share, click } = setup(true);
+    expect(await deliverConversion(new Blob(['png'], { type: 'image/png' }), 'photo-400x300.png', 'download')).toBe('downloadStarted');
+    expect(click).toHaveBeenCalledTimes(1);
+    expect(share).not.toHaveBeenCalled();
+  });
+  it('allows a separate user-activated share on desktop too', async () => {
+    const { share, click } = setup();
+    const pending = deliverConversion(new Blob(['jpg'], { type: 'image/jpeg' }), 'edited.jpg', 'share');
+    expect(share).toHaveBeenCalledTimes(1);
+    expect(await pending).toBe('shared');
+    expect(click).not.toHaveBeenCalled();
+  });
   it('starts native sharing synchronously on supported touch devices with correct file type/name/content', async () => {
     const { share, click } = setup(true);
     const blob = new Blob(['encoded-png'], { type: 'image/png' });

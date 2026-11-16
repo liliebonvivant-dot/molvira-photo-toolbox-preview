@@ -4,10 +4,10 @@ export function isShareCancelled(error: unknown): boolean {
 }
 
 // Called directly by a gesture with an already encoded file: no await before share/click.
-export async function deliverConversion(blob: Blob, filename: string): Promise<DeliveryOutcome> {
+export async function deliverConversion(blob: Blob, filename: string, mode: 'auto' | 'download' | 'share' = 'auto'): Promise<DeliveryOutcome> {
   try {
     const file = new File([blob], filename, { type: blob.type });
-    if (matchMedia('(pointer: coarse)').matches && navigator.canShare?.({ files: [file] })) {
+    if (mode === 'share' || (mode === 'auto' && matchMedia('(pointer: coarse)').matches && navigator.canShare?.({ files: [file] }))) {
       try {
         await navigator.share({ files: [file], title: filename });
         return 'shared';
