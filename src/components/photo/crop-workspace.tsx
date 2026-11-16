@@ -46,7 +46,7 @@ export function CropWorkspace({tool,lang,slug}:{tool:Tool;lang:Language;slug:str
  function navigate(next:number){setIndex(next);setAngle(0);setError(undefined);selectRatio(ratio,history[next]);}
  function restore(){if(!source)return;commit(originalEdit(source.width,source.height));setRatio('free');setSelection(fullCrop);}
  function download(){if(!current||!edit)return;const a=document.createElement('a');a.href=current.url;const name=(source?.name.replace(/\.[^.]+$/,'')||'image').replace(/[<>:"/\\|?*\u0000-\u001f]/g,'_');a.download=`${name}-edited-${edit.width}x${edit.height}.${format==='image/jpeg'?'jpg':format==='image/png'?'png':'webp'}`;document.body.appendChild(a);a.click();a.remove();}
- const icon=(label:string,Icon:typeof Undo2,action:()=>void,disabled=false)=><Button type="button" variant="outline" size="icon" aria-label={label} title={label} disabled={disabled} onClick={action}><Icon/></Button>;
+ const icon=(label:string,Icon:typeof Undo2,action:()=>void,disabled=false)=><Button type="button" variant="outline" size="icon" className="crop-icon-button" aria-label={label} title={label} disabled={disabled} onClick={action}><Icon/><span className="crop-icon-label" aria-hidden="true">{label}</span></Button>;
  function manual(value:number){if(!Number.isFinite(value))return;setAngle(Math.max(-180,Math.min(180,value)));setError(undefined);setSelection(fullCrop);setRatio('free');}
  return <Shell lang={lang} slug={slug}><main id="main" className="content-width tool-page resize-page crop-page">
   <nav className="breadcrumbs"><Link to="/$lang" params={{lang}}>{c.home}</Link><ChevronRight size={13}/><span>{tool.titles[langIndex(lang)]}</span></nav>
