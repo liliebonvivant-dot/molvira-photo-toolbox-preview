@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { conversionDimensionError, conversionName, encodeConversion, heifHeader, inspectConversion } from '@/lib/photo/convert';
+import { reducedDimensions, safePixelBudget, conversionDimensionError, conversionName, encodeConversion, heifHeader, inspectConversion } from '@/lib/photo/convert';
 function heif(width=400,height=300,brand='heic') {
  const b=new Uint8Array(68),v=new DataView(b.buffer);
  const box=(o:number,n:number,t:string)=>{v.setUint32(o,n);b.set(new TextEncoder().encode(t),o+4);};
@@ -16,12 +16,16 @@ describe('local conversion rules',()=>{
  it('does not mistake AVIF for HEIC',()=>expect(heifHeader(heif(400,300,'avif'))).toBeUndefined());
  it('rejects forged file types',async()=>{await expect(inspectConversion({size:3,arrayBuffer:async()=>new Uint8Array([1,2,3]).buffer} as File)).rejects.toThrow('fileType');});
  it('limits regular files to 20 MiB before reading',async()=>{await expect(inspectConversion({size:20*1024*1024+1} as File)).rejects.toThrow('fileSize');});
- it('limits HEIF files to 10 MiB',async()=>{await expect(inspectConversion({size:10*1024*1024+1,arrayBuffer:async()=>heif().buffer} as File)).rejects.toThrow('fileSize');});
- it('rejects oversized HEIC before allocating a decoder',async()=>{await expect(inspectConversion({size:72,arrayBuffer:async()=>heif(5000,4000).buffer} as File)).rejects.toThrow('inputLimit');});
+ it('limits HEIF files to 20 MiB',async()=>{await expect(inspectConversion({size:20*1024*1024+1,arrayBuffer:async()=>heif().buffer} as File)).rejects.toThrow('fileSize');});
+ it('rejects oversized HEIC before allocating a decoder',async()=>{await expect(inspectConversion({size:72,arrayBuffer:async()=>heif(9000,7000).buffer} as File)).rejects.toThrow('inputLimit');});
  it('does not decode HEIF with unverifiable dimensions',async()=>{await expect(inspectConversion({size:72,arrayBuffer:async()=>heif(0,0).buffer} as File)).rejects.toThrow('heicError');});
- it('allows 16 megapixels without resizing',()=>expect(conversionDimensionError(4000,4000)).toBe(false));
- it('rejects over 16 megapixels',()=>expect(conversionDimensionError(4000,4001)).toBe(true));
- it('limits each side to 8192',()=>expect(conversionDimensionError(8193,1)).toBe(true));
+ it('accepts 24 MP and 48 MP iPhone photos',()=>{expect(conversionDimensionError(5712,4284)).toBe(false);expect(conversionDimensionError(8064,6048)).toBe(false);});
+ it('rejects over 50 megapixels',()=>expect(conversionDimensionError(10000,5001)).toBe(true));
+ it('limits each side to 12000',()=>expect(conversionDimensionError(12001,1)).toBe(true));
+ it('keeps the original when it fits',()=>expect(reducedDimensions(4000,3000)).toEqual({width:4000,height:3000}));
+ it('offers a proportional reduction within 16 MP for 48 MP',()=>{const r=reducedDimensions(8064,6048);expect(r.width*r.height).toBeLessThanOrEqual(16_000_000);expect(r.width/r.height).toBeCloseTo(8064/6048,2);});
+ it('uses the iPhone Safari canvas budget on iOS',()=>expect(safePixelBudget({userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)'})).toBe(16_000_000));
+ it('allows 48 MP on capable desktops',()=>expect(safePixelBudget({userAgent:'Mozilla/5.0 (Windows NT 10.0)',deviceMemory:8})).toBe(50_000_000));
  it.each([['image/jpeg','jpg'],['image/png','png'],['image/webp','webp']] as const)('matches extension for %s',(mime,ext)=>expect(conversionName('photo.jpeg',mime)).toBe(`photo-converted.${ext}`));
  it.each(['image/jpeg','image/png','image/webp'] as const)('preserves dimensions and sends quality for %s',async format=>{
   const fillRect=vi.fn(),drawImage=vi.fn(),ctx={fillStyle:'',fillRect,drawImage};
