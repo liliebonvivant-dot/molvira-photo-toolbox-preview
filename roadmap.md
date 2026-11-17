@@ -1,4 +1,8 @@
 # MOLVIRA PHOTO — Phase 1
+## White Background implementation
+- [x] Implement isolated local PNG/WebP transparency detection and pure white compositing at original resolution, before/after and JPG/PNG/WebP delivery in EN/PT/ES; preserve six tools and experimental block.
+- [x] Test full/partial transparency, softened edges, opaque inputs, six real downloads, language switching and desktop/tablet/mobile layout; 155 regressions passed, report delivered without publishing.
+- [ ] Owner approval and physical Safari/iPhone/iPad/Android validation (requires owner and physical devices; large-image capacity remains device-dependent).
 ## Definitive experimental isolation
 - [x] Audit loading, public access, catalog/sitemap exclusions and licensing boundaries; detach prototype imports, deny direct access with HTTP 404, archive public runtime files, preserve six tools/dependencies; 138 original + 6 isolation tests passed, browser verified without experimental downloads. No publication.
 - [ ] Reopen owner-only prototype access only after owner approves a genuine private access mechanism; current route is blocked for everyone. Previously hosted model asset URLs are not private or revoked by route blocking.
