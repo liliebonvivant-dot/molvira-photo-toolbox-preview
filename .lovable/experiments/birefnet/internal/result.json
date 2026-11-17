@@ -1,0 +1,42 @@
+{
+  "blob": {},
+  "metrics": {
+    "width": 768,
+    "height": 512,
+    "box": {
+      "width": 512,
+      "height": 341,
+      "x": 0,
+      "y": 85,
+      "side": 512
+    },
+    "reused": false,
+    "downloadMs": 973.3000000000466,
+    "sessionMs": 5672.799999999814,
+    "inferenceMs": 10636.399999999907,
+    "totalMs": 17455,
+    "outputBytes": 15619
+  },
+  "alpha": {
+    "min": 0,
+    "max": 255,
+    "partial": 7145
+  },
+  "renderer_rss_sum_peak_bytes": 1937756160,
+  "stages": [
+    "download",
+    "session",
+    "inference"
+  ],
+  "requests": [
+    "worker.mjs",
+    "ort.mjs",
+    "geometry.mjs",
+    "math.mjs",
+    "matte.mjs",
+    "model.onnx",
+    "runtime.mjs",
+    "runtime.wasm"
+  ],
+  "page_errors": []
+}

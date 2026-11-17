@@ -60,3 +60,4 @@ use the editor.
 - Isolate E-commerce UI/copy and margin-clipped output composition; reuse social placement, source budgets, bounded encoding and delivery without changing existing editors, and bound previews to 4 MP so exact preset pixels remain inspectable without unbounded custom allocations.
 - Dispatch catalog tools through a typed workspace registry now that every tool has a local processor; this removes unreachable presentation-only fallbacks without changing individual editors.
 - Share boundary-only currency normalization between price editors so amounts stay literal and selected currency appears once.
+- Run renewed BiRefNet feasibility only through an internal loopback harness outside application routes; preserve the closed access boundary and never infer mobile safety from image pixel budgets alone.

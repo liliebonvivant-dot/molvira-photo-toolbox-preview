@@ -1,4 +1,10 @@
 # MOLVIRA PHOTO — Phase 1
+## BiRefNet-lite — renewed isolated feasibility request
+- [x] Verify exact official revision, author MIT permissions, original LFS identity, exported SHA256 and existing runtime/dependencies before reuse.
+- [x] Evaluate conversion/INT8 infrastructure; stop quantization because ONNX/PyTorch/export packages are unavailable, without enabling routes or installing dependencies.
+- [x] Execute internal FP32/letterbox Chromium inference and transparent PNG on a synthetic fixture; run regression/isolation checks and report new versus historical evidence.
+- [ ] Compare IMG.LY/BiRefNet on the five authorized photo categories (owner agreed to resend; attachments still required).
+- [ ] Validate physical browsers, model-memory feasibility and remaining training-data rights before any replacement/publication (requires devices and legal review).
 ## Stage 1 — Technical corrections and consistency
 - [x] Normalize editor prices using the existing Product Ad behavior; align EN/PT/ES availability and privacy copy without changing SEO.
 - [x] Bound White Background source handling with explicit reduction and resource cleanup, retaining composition and all formats.

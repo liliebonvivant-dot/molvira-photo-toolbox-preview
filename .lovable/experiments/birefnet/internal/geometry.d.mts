@@ -1,0 +1,2 @@
+export function letterbox(width: number, height: number, side?: number): { width: number; height: number; x: number; y: number; side: number };
+export function validateWorkingSize(width: number, height: number): { width: number; height: number };

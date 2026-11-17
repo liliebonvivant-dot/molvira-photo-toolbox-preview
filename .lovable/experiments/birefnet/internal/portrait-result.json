@@ -1,0 +1,25 @@
+{
+  "blob": {},
+  "metrics": {
+    "width": 512,
+    "height": 768,
+    "box": {
+      "width": 341,
+      "height": 512,
+      "x": 85,
+      "y": 0,
+      "side": 512
+    },
+    "reused": true,
+    "downloadMs": 0,
+    "sessionMs": 0,
+    "inferenceMs": 11993.90000000014,
+    "totalMs": 12057.59999999986,
+    "outputBytes": 16177
+  },
+  "alpha": {
+    "min": 0,
+    "max": 255,
+    "partial": 6830
+  }
+}

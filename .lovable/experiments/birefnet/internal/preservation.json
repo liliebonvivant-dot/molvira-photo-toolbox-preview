@@ -1,0 +1,60 @@
+{
+  "pages": [
+    {
+      "url": "http://localhost:8080/en/remove-image-background",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8080/en/instagram-image-maker",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8080/en/whatsapp-image-maker",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8080/en/product-ad-maker",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8080/en/white-background-maker",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8080/en/add-text-prices-logos",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8080/en/resize-images",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8080/en/compress-images",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8080/en/convert-images",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8080/en/photo-collage-maker",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8080/en/add-watermark",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8080/en/crop-rotate-images",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8080/en/ecommerce-image-maker",
+      "status": 200
+    }
+  ],
+  "normal_experimental_requests": [],
+  "experimental_status": 404,
+  "internal_harness_status": 404,
+  "page_errors": []
+}
