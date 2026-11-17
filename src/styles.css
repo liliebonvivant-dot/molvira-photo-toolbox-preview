@@ -323,3 +323,13 @@
 .crop-stage .ReactCrop__crop-selection { color:var(--primary-foreground); }
 @media(max-width:700px) { .crop-stage { padding:12px; } .crop-stage canvas { max-height:340px; } .crop-stage .ReactCrop__drag-handle { width:44px; height:44px; } }
 @media(max-width:700px) { .resize-image-frame { height:240px; } .resize-page .setting-field input:not([type=range]),.resize-page .setting-field select { font-size:16px; min-height:44px; } .resize-page .setting-check { min-height:32px; } }
+
+/* Watermark workspace, isolated from existing processors. */
+.watermark-stage { min-height:240px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border); background:repeating-conic-gradient(var(--card) 0% 25%,var(--muted) 0% 50%) 0 0/20px 20px; overflow:hidden; }
+.watermark-stage canvas { display:block; max-width:100%; max-height:450px; width:auto; height:auto; touch-action:none; cursor:move; }
+.watermark-stage canvas:focus-visible { outline:2px solid var(--ring); outline-offset:-2px; }
+.watermark-modes { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:20px; }
+.watermark-modes button { white-space:normal; height:auto; min-height:44px; flex:1; font-size:11px; }
+.watermark-logo { margin-bottom:18px; }.watermark-logo img { max-width:100%; max-height:100px; object-fit:contain; }
+.watermark-page .setting-field>span { flex-wrap:wrap; }
+@media(max-width:700px) { .watermark-stage canvas { max-height:340px; }.watermark-page .setting-field input[type=range] { min-height:32px; } }

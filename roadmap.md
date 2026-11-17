@@ -1,4 +1,7 @@
 # MOLVIRA PHOTO — Phase 1
+- [x] Implement Watermark only: local text/logo, dragging/presets, repetition, live preview, optional reduction and existing saving.
+- [x] Verify watermark rendering, downloads, translations and small screens; deliver objective report without publishing.
+- [ ] Owner practical approval of Watermark (requires user validation and physical Apple devices).
 - [x] Preserve official logos and establish the PDF-inspired design system.
 - [x] Build localized catalog, 12 tool workspaces, and institutional pages.
 - [x] Prepare development-only controls, advertising reservations, and international SEO.

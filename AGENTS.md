@@ -31,7 +31,7 @@ use the editor.
 
 ## Application architecture
 - Use a shared localized catalog and validated language/slug routes for all tool and institutional pages so language switching preserves page identity.
-- Keep unapproved tool workspaces presentation-only; resize, crop/rotate, conversion and compression are the approved local processors.
+- Keep unapproved tool workspaces presentation-only; resize, crop/rotate, conversion and compression are approved local processors; watermark is implemented for owner practical validation.
 - Isolate compression UI and localization; reuse HEIF decoding, canvas encoding, device budgets and delivery, and optimize native PNG by removing only text/time metadata without changing pixel or orientation chunks so lossless claims remain truthful.
 - Compression compares uploaded file bytes against encoded output regardless of format; within the estimated device budget try actual encoding without a canvas preflight, and offer explicit meaningful reduction after failure to avoid probe-induced one-pixel resizing.
 - Isolate conversion UI and localization from header validation and Canvas encoding that preserves dimensions unless the user explicitly picks the offered proportional reduction (device pixel-budget + canvas probe decide); use an on-demand, owned HEIF worker with timeout and termination to avoid blocking the interface or retaining decoder memory.
@@ -41,3 +41,5 @@ use the editor.
 - Use react-image-crop for touch/keyboard selection and numeric affine transforms with clipping polygons for crop history; render from the original once to avoid cumulative quality loss and bound history to 30 steps.
 - Store only the language preference in browser storage; image data must not be persisted by this preview.
 - Keep international metadata on content leaves and exclude development pages from indexing; resolve sitemap locations to the approved absolute domain before launch.
+
+- Isolate watermark UI, source lifecycle, localization and native Canvas composition; reuse HEIF decoding, explicit reduction and untouched file delivery, with a bounded display canvas and original-resolution export.
