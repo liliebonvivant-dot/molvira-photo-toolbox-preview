@@ -1,4 +1,9 @@
 # MOLVIRA PHOTO — Phase 1
+## Remove Background
+- [x] Implement isolated local segmentation, EN/PT/ES progress, comparison and transparent PNG delivery.
+- [x] Test real photographs, transparency, errors, large inputs, layouts and five-tool regressions; deliver technical report without publishing.
+- [ ] Owner validation on physical mobile devices and license review before launch (requires physical devices and owner licensing decision).
+
 - [x] Implement Watermark only: local text/logo, dragging/presets, repetition, live preview, optional reduction and existing saving.
 - [x] Verify watermark rendering, downloads, translations and small screens; deliver objective report without publishing.
 - [ ] Owner practical approval of Watermark (requires user validation and physical Apple devices).
