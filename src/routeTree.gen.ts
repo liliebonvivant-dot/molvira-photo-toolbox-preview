@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as LangRouteImport } from './routes/$lang'
 import { Route as LangIndexRouteImport } from './routes/$lang.index'
 import { Route as LangPageRouteImport } from './routes/$lang.$page'
+import { Route as ExperimentalBirefnetRouteImport } from './routes/experimental.birefnet'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,16 +35,23 @@ const LangPageRoute = LangPageRouteImport.update({
   path: '/$page',
   getParentRoute: () => LangRoute,
 } as any)
+const ExperimentalBirefnetRoute = ExperimentalBirefnetRouteImport.update({
+  id: '/experimental/birefnet',
+  path: '/experimental/birefnet',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$lang': typeof LangRouteWithChildren
   '/$lang/$page': typeof LangPageRoute
+  '/experimental/birefnet': typeof ExperimentalBirefnetRoute
   '/$lang/': typeof LangIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$lang/$page': typeof LangPageRoute
+  '/experimental/birefnet': typeof ExperimentalBirefnetRoute
   '/$lang': typeof LangIndexRoute
 }
 export interface FileRoutesById {
@@ -51,19 +59,28 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$lang': typeof LangRouteWithChildren
   '/$lang/$page': typeof LangPageRoute
+  '/experimental/birefnet': typeof ExperimentalBirefnetRoute
   '/$lang/': typeof LangIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$lang' | '/$lang/$page' | '/$lang/'
+  fullPaths:
+    '/' | '/$lang' | '/$lang/$page' | '/experimental/birefnet' | '/$lang/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$lang/$page' | '/$lang'
-  id: '__root__' | '/' | '/$lang' | '/$lang/$page' | '/$lang/'
+  to: '/' | '/$lang/$page' | '/experimental/birefnet' | '/$lang'
+  id:
+    | '__root__'
+    | '/'
+    | '/$lang'
+    | '/$lang/$page'
+    | '/experimental/birefnet'
+    | '/$lang/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LangRoute: typeof LangRouteWithChildren
+  ExperimentalBirefnetRoute: typeof ExperimentalBirefnetRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -96,6 +113,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LangPageRouteImport
       parentRoute: typeof LangRoute
     }
+    '/experimental/birefnet': {
+      id: '/experimental/birefnet'
+      path: '/experimental/birefnet'
+      fullPath: '/experimental/birefnet'
+      preLoaderRoute: typeof ExperimentalBirefnetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -114,6 +138,7 @@ const LangRouteWithChildren = LangRoute._addFileChildren(LangRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LangRoute: LangRouteWithChildren,
+  ExperimentalBirefnetRoute: ExperimentalBirefnetRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,4 +1,8 @@
 # MOLVIRA PHOTO — Phase 1
+## Isolated BiRefNet-lite prototype
+- [x] Create an unlisted, noindex prototype with on-demand permissive ONNX weights and a separate runtime; preserve all six tools.
+- [x] Compare owner's three photographs, measure download/time/renderer RSS, test alpha and 138 regressions, and deliver illustrated report; 1024 px export exceeded memory, own 512 px/opset22 export works but remains too heavy for unverified mobile use.
+- [ ] Physical Safari/iPhone/iPad/Android validation and final license review (requires physical devices and owner/legal review; not approved for replacement or publication).
 ## Remove Background
 - [x] Refine mask edges conservatively without replacing the model; compare owner's dog/watch/woman photographs, verify real PNG alpha and 133 regression tests; document partial improvement and persistent model errors.
 - [ ] Owner approval of before/after quality and Safari validation on physical devices (requires owner review and physical devices; original photographs received and tested in Chromium).
