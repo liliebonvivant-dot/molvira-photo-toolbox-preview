@@ -32,8 +32,17 @@ export function redoAd(h: AdHistory): AdHistory { const p = h.future[0]; return 
 export function usedAdAssets(h: AdHistory) { return new Set([...h.past,h.present,...h.future].flatMap(s => [s.photo,s.logo]).filter((id): id is string => !!id)); }
 export function resetAd(s: AdState): AdState { return selectAdFormat(selectAdTemplate({ ...initialAd(), photo: s.photo }, s.template), s.preset); }
 export function adPhotoCell(s: AdState): Cell { return { x: s.width * .05, y: s.height * (s.template === 'catalog' ? .15 : .12), width: s.width * .9, height: s.height * (s.template === 'catalog' ? .53 : .49) }; }
-export function adDisplayText(s: AdState, key: AdField) { const text = s.texts[key].text; return text.trim() && (key === 'price' || key === 'oldPrice') ? `${s.currency} ${text}`.trim() : text; }
-export function visibleAdFields(s: AdState): AdField[] { return adFields.filter(k => s.texts[k].text.trim() && (k !== 'oldPrice' || s.template === 'promotion')); }
+export function adDisplayText(s: AdState, key: AdField) {
+  if (key !== 'price' && key !== 'oldPrice') return s.texts[key].text;
+  const currency = s.currency.trim();
+  const escaped = currency.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // Remove only boundary currency markers, never parse or reformat the literal amount.
+  const marker = `(?:${escaped ? `${escaped}|` : ''}R\\$|US\\$|CA\\$|AU\\$|BRL|USD|EUR|GBP|\\p{Sc})`;
+  const boundary = new RegExp(`^(?:${marker}\\s*)+|(?:\\s*${marker})+$`, 'gu');
+  const amount = s.texts[key].text.trim().replace(boundary, '').trim();
+  return amount ? `${currency} ${amount}`.trim() : '';
+}
+export function visibleAdFields(s: AdState): AdField[] { return adFields.filter(k => adDisplayText(s,k).trim()); }
 function font(t: AdText, size: number, bold: boolean) { return `${bold ? 'bold ' : ''}${size}px "${editorFonts.find(f => f === t.font) ?? 'Arial'}"`; }
 // Bound every text box and wrap by Unicode code point; prices stay literal on a single fitted line.
 export function adTextRect(ctx: Pick<CanvasRenderingContext2D, 'font' | 'measureText'>, s: AdState, key: AdField): LayerRect {
@@ -79,6 +88,7 @@ export function drawAd(ctx: CanvasRenderingContext2D, s: AdState, sources: AdSou
     ctx.save(); try {
       if (rect.pad) { ctx.fillStyle = color(s.accent,'#202020'); ctx.fillRect(rect.x,rect.y,rect.width,rect.height); }
       ctx.font = font(t,rect.fontSize,key === 'price' || key === 'name'); ctx.textBaseline = 'top'; ctx.fillStyle = color(t.color,'#202020');
+      if (key === 'oldPrice') ctx.globalAlpha = .65;
       rect.lines.forEach((line,i) => ctx.fillText(line,rect.x+rect.pad,rect.y+rect.pad+i*rect.fontSize*1.2));
       if (key === 'oldPrice') { ctx.strokeStyle=ctx.fillStyle; ctx.lineWidth=Math.max(1,rect.fontSize*.06); ctx.beginPath(); ctx.moveTo(rect.x,rect.y+rect.fontSize*.5); ctx.lineTo(rect.x+rect.width,rect.y+rect.fontSize*.5); ctx.stroke(); }
     } finally { ctx.restore(); }

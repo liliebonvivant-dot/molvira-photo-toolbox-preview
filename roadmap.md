@@ -1,4 +1,7 @@
 # MOLVIRA PHOTO — Phase 1
+## Product Ad final adjustments
+- [x] Normalize current/previous price currency display and show optional previous price across existing models without altering input values or positioning controls.
+- [x] Verify 12 actual JPG/PNG/WebP exports, pixel-identical PNG preview, four exact formats/chosen price positions, five models, EN/PT/ES and eleven prior pages; 300 regression tests passed; report without publishing.
 ## Product Ad Maker
 - [x] Implement five editable templates, exact formats, local photo/logo composition, history, EN/PT/ES and existing delivery without changing eleven tools.
 - [x] Run 293 tests (257 prior + 36 new), real JPG/PNG/WebP downloads, four exact presets, PNG pixel fidelity, upload/replacement/logo/reset, EN/PT/ES, touch/layout, explicit 48 MP cancellation and eleven prior pages; deliver report without publishing.
