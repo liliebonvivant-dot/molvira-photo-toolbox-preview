@@ -1,4 +1,8 @@
 # MOLVIRA PHOTO — Phase 1
+## Add Text, Prices & Logos
+- [x] Implement isolated local multi-layer editor, editable text/prices/logos, touch dragging/resizing, bounded undo/redo and EN/PT/ES export; preserve seven tools and prototype.
+- [x] Run 175 automated rules/regression tests; verify real JPG/PNG/WebP downloads, pixel-identical native preview/export, alpha 0/128, 48 MP desktop export, explicit iPhone reduction offer, touch controls and scrolling; report delivered without publishing.
+- [ ] Owner practical validation on physical iPhone/iPad before publication (requires owner and physical devices).
 ## White Background implementation
 - [x] Implement isolated local PNG/WebP transparency detection and pure white compositing at original resolution, before/after and JPG/PNG/WebP delivery in EN/PT/ES; preserve six tools and experimental block.
 - [x] Test full/partial transparency, softened edges, opaque inputs, six real downloads, language switching and desktop/tablet/mobile layout; 155 regressions passed, report delivered without publishing.
