@@ -1,6 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { BiRefnetPrototype } from '@/components/photo/birefnet-prototype';
+import { createFileRoute, notFound } from '@tanstack/react-router';
 export const Route = createFileRoute('/experimental/birefnet')({
+  // No component import: neither preloading nor navigation can ship the prototype graph.
+  // This is a closed route, not a client-side authentication mechanism.
+  beforeLoad: () => { throw notFound(); },
   head: () => ({ meta: [
     { title: 'MOLVIRA PHOTO — Protótipo BiRefNet-lite' },
     { name: 'description', content: 'Avaliação experimental local de remoção de fundo com BiRefNet-lite. Não aprovado para publicação.' },
@@ -9,5 +11,4 @@ export const Route = createFileRoute('/experimental/birefnet')({
     { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary' },
     { name: 'robots', content: 'noindex, nofollow' },
   ] }),
-  component: BiRefnetPrototype,
 });

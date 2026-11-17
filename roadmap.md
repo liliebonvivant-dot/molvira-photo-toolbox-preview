@@ -1,4 +1,7 @@
 # MOLVIRA PHOTO — Phase 1
+## Definitive experimental isolation
+- [x] Audit loading, public access, catalog/sitemap exclusions and licensing boundaries; detach prototype imports, deny direct access with HTTP 404, archive public runtime files, preserve six tools/dependencies; 138 original + 6 isolation tests passed, browser verified without experimental downloads. No publication.
+- [ ] Reopen owner-only prototype access only after owner approves a genuine private access mechanism; current route is blocked for everyone. Previously hosted model asset URLs are not private or revoked by route blocking.
 ## Isolated BiRefNet-lite prototype
 - [x] Create an unlisted, noindex prototype with on-demand permissive ONNX weights and a separate runtime; preserve all six tools.
 - [x] Compare owner's three photographs, measure download/time/renderer RSS, test alpha and 138 regressions, and deliver illustrated report; 1024 px export exceeded memory, own 512 px/opset22 export works but remains too heavy for unverified mobile use.

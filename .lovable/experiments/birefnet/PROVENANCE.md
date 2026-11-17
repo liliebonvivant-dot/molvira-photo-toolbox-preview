@@ -1,13 +1,13 @@
 # BiRefNet-lite experimental export
 
-Not approved for replacement or publication. Route `/experimental/birefnet` is unlisted and noindex, not an access-control boundary. No photographs are hosted or uploaded.
+Not approved for replacement or publication. Route `/experimental/birefnet` is now closed with server-entry HTTP 404 and a router notFound guard; its prototype component is detached from route imports. No photographs are hosted or uploaded. Reopening requires explicit approval of a genuine private access boundary. Existing hosted model asset URLs are not private storage and are not revoked by closing this route.
 
 ## Files and licenses
 - Official source and weights: https://huggingface.co/ZhengPeng7/BiRefNet_lite/tree/aa62cd87eafb9cc43056d08ef3615a14628b831d — MIT. Author explicitly covers code and weights: https://github.com/ZhengPeng7/BiRefNet/issues/316 and https://huggingface.co/ZhengPeng7/BiRefNet/discussions/23 . Dataset/backbone rights remain a separate review.
 - Working ONNX: own export, FP32, fixed 512×512 input, opset22 native DeformConv; strict official checkpoint load, no retraining. SHA256 `dff37bed4e94479a6a8f6b0e64d69030557bdcb79d53c9993b277f5c0cee4c93`, 180638623 bytes.
 - Failed baseline ONNX: https://huggingface.co/onnx-community/BiRefNet_lite-ONNX/tree/de15b22ba131738a16dff04aab8bdf8dc32e3ac1 — MIT declaration. SHA256 `5600024376f572a557870a5eb0afb1e5961636bef4e1e22132025467d0f03333`, 224005088 bytes. Never loaded by final prototype; retain pointer as experimental provenance only.
 - Runtime alias `ort-birefnet` is `onnxruntime-web@1.31.1` (MIT), WASM-only, one thread, dedicated terminable worker; existing runtime/package unchanged.
-- Runtime transitive declarations: onnxruntime-common/platform MIT; long/flatbuffers Apache-2.0; protobufjs/@protobufjs modules BSD-3-Clause; guid-typescript ISC. Full locked versions in bun.lock. Notices included in public/experimental/birefnet. No IMG.LY imports in experimental dependency graph.
+- Runtime transitive declarations: onnxruntime-common/platform MIT; long/flatbuffers Apache-2.0; protobufjs/@protobufjs modules BSD-3-Clause; guid-typescript ISC. Full locked versions in bun.lock. Runtime loader and license notices archived in `.lovable/experiments/birefnet/runtime-notices`, outside public serving. No IMG.LY imports in experimental dependency graph.
 
 ## Reproduction
 Use a Python environment outside the application. Install CPU torch, torchvision, transformers, timm, einops, kornia, safetensors, onnx, onnxscript. Download official `birefnet.py`, `BiRefNet_config.py`, and `model.safetensors` at the revision above to `/tmp/birefnet`. Change only its relative `from .BiRefNet_config` import to `from BiRefNet_config` for standalone execution. Run `export_512.py`. This exports fixed dimensions; it is not a dynamic-size graph. Export tools are not shipped as app dependencies.

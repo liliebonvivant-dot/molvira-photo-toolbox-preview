@@ -46,4 +46,4 @@ use the editor.
 
 - Isolate background removal in an owned, terminable worker using quantized ISNet/ONNX on CPU; request explicit working-copy reduction, preserve source alpha, fetch only model/runtime assets externally, and review AGPL obligations before launch.
 - Refine background masks with bounded RGB-guided interpolation and straight-alpha multiplication; avoid erosion, component pruning or recoloring to preserve fine strands, separate subjects and partial transparency without introducing matte halos.
-- Keep BiRefNet experiments in an unlisted noindex route with an aliased WASM-only runtime and hash-pinned model loaded only on user action; retain one worker/session until explicit release so the six existing processors and their dependencies remain unchanged.
+- Keep BiRefNet source detached from the route import graph and deny its route at the server entry and router until private access is explicitly approved; noindex and sitemap/catalog exclusion are supplementary, not authorization, and existing public asset URLs are not private storage. This prevents public execution and experimental runtime bundling without touching the six processors.
