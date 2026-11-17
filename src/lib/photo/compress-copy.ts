@@ -2,8 +2,8 @@ import type { Language } from './content';
 const en = {
   result: 'Processed image', empty: 'Your processed image will appear here', download: 'Compress & download',
   level: 'Compression level', high: 'High quality', balanced: 'Balanced', small: 'Smaller size', custom: 'Custom',
-  comparison: 'Size comparison', saved: 'Saved', larger: 'Larger by', reduction: 'Reduction',
-  noReduction: 'No smaller file was obtained. You can keep the original.',
+  comparison: 'Size comparison', saved: 'Saved', larger: 'Larger by', reduction: 'Reduction', increase: 'Increase',
+  noReduction: 'No savings: the generated file is not smaller than the original. You can keep the original unchanged, even when the output format is different.',
   insignificant: 'The reduction is less than 1%. You may prefer to keep the original.',
   keep: 'Keep original', png: 'PNG: lossless removal of text and time metadata only. Image data, transparency, color and orientation are unchanged; already optimized files may not shrink. No palette reduction or recompression is applied.',
   reducedPng: 'After your chosen resolution reduction, PNG is encoded without additional compression loss. This is not a lossless optimization of the original image.',
@@ -20,8 +20,8 @@ export const compressCopy: Record<Language, typeof en> = {
  pt: {
   result: 'Imagem processada', empty: 'Sua imagem processada aparecerá aqui', download: 'Comprimir e baixar',
   level: 'Nível de compressão', high: 'Alta qualidade', balanced: 'Equilibrada', small: 'Menor tamanho', custom: 'Personalizada',
-  comparison: 'Comparação de tamanhos', saved: 'Economia', larger: 'Aumento de', reduction: 'Redução',
-  noReduction: 'Não foi obtido um arquivo menor. Você pode manter o original.',
+  comparison: 'Comparação de tamanhos', saved: 'Economia', larger: 'Aumento de', reduction: 'Redução', increase: 'Aumento',
+  noReduction: 'Não houve economia: o arquivo gerado não é menor que o original. Você pode manter o original sem alterações, mesmo quando o formato de saída é diferente.',
   insignificant: 'A redução é inferior a 1%. Talvez você prefira manter o original.', keep: 'Manter original',
   png: 'PNG: remoção sem perdas apenas dos metadados de texto e data. Dados da imagem, transparência, cor e orientação não mudam; arquivos já otimizados podem não diminuir. Não há redução de paleta nem recodificação.',
   reducedPng: 'Após a redução de resolução escolhida, PNG é codificado sem perdas adicionais de compressão. Isso não é uma otimização sem perdas da imagem original.',
@@ -36,8 +36,8 @@ export const compressCopy: Record<Language, typeof en> = {
  es: {
   result: 'Imagen procesada', empty: 'Tu imagen procesada aparecerá aquí', download: 'Comprimir y descargar',
   level: 'Nivel de compresión', high: 'Alta calidad', balanced: 'Equilibrada', small: 'Menor tamaño', custom: 'Personalizada',
-  comparison: 'Comparación de tamaños', saved: 'Ahorro', larger: 'Aumento de', reduction: 'Reducción',
-  noReduction: 'No se obtuvo un archivo más pequeño. Puedes conservar el original.',
+  comparison: 'Comparación de tamaños', saved: 'Ahorro', larger: 'Aumento de', reduction: 'Reducción', increase: 'Aumento',
+  noReduction: 'No hubo ahorro: el archivo generado no es más pequeño que el original. Puedes conservar el original sin cambios, incluso cuando el formato de salida sea diferente.',
   insignificant: 'La reducción es inferior al 1%. Quizás prefieras conservar el original.', keep: 'Conservar original',
   png: 'PNG: eliminación sin pérdidas solo de metadatos de texto y fecha. Los datos de imagen, transparencia, color y orientación no cambian; los archivos optimizados pueden no reducirse. No se reduce la paleta ni se recodifica.',
   reducedPng: 'Tras la reducción de resolución elegida, PNG se codifica sin pérdidas adicionales de compresión. No es una optimización sin pérdidas de la imagen original.',

@@ -1,5 +1,15 @@
 import type { ImageFormat } from './resize';
-import { encodeConversion, conversionName } from './convert';
+import { encodeConversion, conversionName, safePixelBudget, reducedDimensions, convertLimits } from './convert';
+import type { ReduceOffer } from './large-image';
+
+// Within the estimated device budget, try the real encoder instead of treating
+// a failed temporary canvas probe as proof that the image needs resizing.
+export function compressionReduceOffer(file: File, width: number, height: number, failed = false): ReduceOffer | undefined {
+  const pixels = width * height, budget = safePixelBudget();
+  if (!failed && pixels <= budget) return;
+  const targetBudget = failed ? Math.min(budget, convertLimits.compatiblePixels, Math.floor(pixels * 0.75)) : budget;
+  return { file, width, height, reduced: reducedDimensions(width, height, Math.max(1, targetBudget)) };
+}
 
 export const compressionLevels = { high: 90, balanced: 75, small: 50 } as const;
 export function compressionStats(original: number, final: number) {

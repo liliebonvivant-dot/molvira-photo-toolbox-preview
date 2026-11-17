@@ -6,10 +6,10 @@ import { copy, langIndex, tools, type Language, type Tool } from '@/lib/photo/co
 import { resizeCopy } from '@/lib/photo/resize-copy';
 import { convertCopy } from '@/lib/photo/convert-copy';
 import { compressCopy } from '@/lib/photo/compress-copy';
-import { compressImage, compressionLevels, compressionName, compressionStats } from '@/lib/photo/compress';
-import { canProcessOriginal, conversionDimensionError, decodeHeif, encodeConversion, formatLabel, inspectConversion, type SourceFormat } from '@/lib/photo/convert';
+import { compressImage, compressionLevels, compressionName, compressionStats, compressionReduceOffer } from '@/lib/photo/compress';
+import { conversionDimensionError, decodeHeif, encodeConversion, formatLabel, inspectConversion, type SourceFormat } from '@/lib/photo/convert';
 import type { ImageFormat } from '@/lib/photo/resize';
-import { reduceOffer, fallbackOffer, type ReduceOffer, type Size } from '@/lib/photo/large-image';
+import { type ReduceOffer, type Size } from '@/lib/photo/large-image';
 import { ReducePrompt, px } from './reduce-prompt';
 import { Shell, ReservedSpace } from './shell';
 import { ToolCard, ToolIcon } from './tool-card';
@@ -46,7 +46,8 @@ export function CompressWorkspace({ tool, lang, slug }: { tool: Tool; lang: Lang
   try {
    const header = await inspectConversion(file);
    if (id !== request.current) return;
-   if (!target && !canProcessOriginal(header.width, header.height)) { setPending(reduceOffer(file, header.width, header.height)); return; }
+   const offer = !target ? compressionReduceOffer(file, header.width, header.height) : undefined;
+   if (offer) { setPending(offer); return; }
    const originalUrl = own(file); localUrls.push(originalUrl);
    let url = originalUrl, image = new window.Image(); image.src = url;
    try { await image.decode(); }
@@ -74,7 +75,7 @@ export function CompressWorkspace({ tool, lang, slug }: { tool: Tool; lang: Lang
   } catch (e) {
    localUrls.forEach(revoke);
    if (id === request.current) {
-    try { const header = await inspectConversion(file); const offer = !target ? fallbackOffer(file, header.width, header.height) : undefined;
+     try { const header = await inspectConversion(file); const offer = !target ? compressionReduceOffer(file, header.width, header.height, true) : undefined;
      if (offer) setPending(offer); else setError(errorCode(e));
     } catch { setError(errorCode(e)); }
    }
@@ -92,7 +93,7 @@ export function CompressWorkspace({ tool, lang, slug }: { tool: Tool; lang: Lang
     output = own(blob); setResult({ blob, url: output, key });
    } catch (e) {
     if (cancelled) return;
-    const offer = !source.reduced ? fallbackOffer(source.file, source.originalWidth, source.originalHeight) : undefined;
+    const offer = !source.reduced ? compressionReduceOffer(source.file, source.originalWidth, source.originalHeight, true) : undefined;
     if (offer) setPending(offer); else setError(errorCode(e));
    } finally { if (!cancelled) setBusy(false); }
   }, 250);
@@ -114,7 +115,7 @@ export function CompressWorkspace({ tool, lang, slug }: { tool: Tool; lang: Lang
    {source && <section className="preview-section"><h2>{r.original} · {px(source.originalWidth, source.originalHeight, lang)} px</h2><div className="resize-image-frame"><img src={source.url} alt={r.original}/></div>{source.reduced && <p className="settings-hint">{r.reducedNote} {r.outputRes}: {px(source.width, source.height, lang)} px</p>}<p className="resize-filename">{source.file.name} · {formatLabel(source.format)} · {size(source.file.size)}</p></section>}
    <section className="preview-section"><h2>{r.result}{current && source ? ` · ${px(source.width, source.height, lang)} px` : ''}</h2><div className="resize-image-frame" aria-live="polite">{current ? <img src={current.url} alt={r.result}/> : <div className="resize-empty">{busy || loading ? <LoaderCircle className="animate-spin" size={30}/> : <ImageIcon size={40} strokeWidth={1}/>}<p>{busy || loading ? r.processing : r.empty}</p></div>}</div>
     {current && <p className="resize-file-size">{r.actual}: {size(current.blob.size)} · {formatLabel(format)}</p>}
-    {stats && <div role="status" aria-live="polite"><h3 className="mt-4">{r.comparison}</h3><p className="resize-file-size">{r.reduction}: {stats.percent.toLocaleString(lang, { maximumFractionDigits: 2 })}% · {stats.smaller ? r.saved : r.larger}: {size(Math.abs(stats.saved))}</p>{!stats.smaller ? <p className="settings-hint">{r.noReduction}</p> : !stats.significant ? <p className="settings-hint">{r.insignificant}</p> : null}</div>}
+    {stats && source && current && <div role="status" aria-live="polite"><h3 className="mt-4">{r.comparison}</h3><p className="resize-file-size">{r.original}: {size(source.file.size)} · {formatLabel(source.format)}<br/>{r.result}: {size(current.blob.size)} · {formatLabel(format)}</p><p className="resize-file-size">{stats.smaller ? r.reduction : r.increase}: {Math.abs(stats.percent).toLocaleString(lang, { maximumFractionDigits: 2 })}% · {stats.smaller ? r.saved : r.larger}: {size(Math.abs(stats.saved))}</p>{!stats.smaller ? <p className="resize-error">{r.noReduction}</p> : !stats.significant ? <p className="settings-hint">{r.insignificant}</p> : null}</div>}
    </section>
   </div><aside className="settings-panel"><div className="panel-heading"><h2>{c.settings}</h2></div>
    <fieldset disabled={!source || loading} className="resize-fields">
