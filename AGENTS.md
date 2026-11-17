@@ -45,3 +45,4 @@ use the editor.
 - Isolate watermark UI, source lifecycle, localization and native Canvas composition; reuse HEIF decoding, explicit reduction and untouched file delivery, with a bounded display canvas and original-resolution export.
 
 - Isolate background removal in an owned, terminable worker using quantized ISNet/ONNX on CPU; request explicit working-copy reduction, preserve source alpha, fetch only model/runtime assets externally, and review AGPL obligations before launch.
+- Refine background masks with bounded RGB-guided interpolation and straight-alpha multiplication; avoid erosion, component pruning or recoloring to preserve fine strands, separate subjects and partial transparency without introducing matte halos.

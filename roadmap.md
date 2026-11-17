@@ -1,5 +1,7 @@
 # MOLVIRA PHOTO — Phase 1
 ## Remove Background
+- [x] Refine mask edges conservatively without replacing the model; compare owner's dog/watch/woman photographs, verify real PNG alpha and 133 regression tests; document partial improvement and persistent model errors.
+- [ ] Owner approval of before/after quality and Safari validation on physical devices (requires owner review and physical devices; original photographs received and tested in Chromium).
 - [x] Implement isolated local segmentation, EN/PT/ES progress, comparison and transparent PNG delivery.
 - [x] Test real photographs, transparency, errors, large inputs, layouts and five-tool regressions; deliver technical report without publishing.
 - [ ] Owner validation on physical mobile devices and license review before launch (requires physical devices and owner licensing decision).

@@ -1,5 +1,6 @@
 import { removeBackground } from '@imgly/background-removal';
 import type { BackgroundSize } from './background';
+import { composeBackgroundMatte } from './background-matte';
 
 // This module is imported only by an owned worker, never by SSR or other processors.
 self.onmessage = async (event: MessageEvent<{ file: File; target?: BackgroundSize }>) => {
@@ -33,12 +34,9 @@ self.onmessage = async (event: MessageEvent<{ file: File; target?: BackgroundSiz
     });
     const rgba = new Uint8ClampedArray(await segmented.arrayBuffer());
     if (rgba.length !== w * h * 4) throw new Error('processError');
-    for (let i = 0; i < rgba.length; i += 4) { rgba[i] = 255; rgba[i + 1] = 255; rgba[i + 2] = 255; }
-    sc.putImageData(new ImageData(rgba, w, h), 0, 0);
-    // destination-in multiplies the model mask by the original alpha channel.
-    ctx.globalCompositeOperation = 'destination-in';
-    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(small, 0, 0, size.width, size.height);
+    const pixels = ctx.getImageData(0, 0, size.width, size.height);
+    composeBackgroundMatte(pixels.data, size.width, size.height, raw.data, rgba, w, h);
+    ctx.putImageData(pixels, 0, 0);
     const blob = await source.convertToBlob({ type: 'image/png' });
     self.postMessage({ blob, width: size.width, height: size.height });
   } catch (error) { self.postMessage({ error: error instanceof Error && error.message === 'unsupported' ? 'unsupported' : 'processError' }); }
