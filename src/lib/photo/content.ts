@@ -1,6 +1,7 @@
 import { resizeCopy } from './resize-copy';
 import { cropCopy } from './crop-copy';
 import { convertCopy } from './convert-copy';
+import { compressCopy } from './compress-copy';
 export type Language = 'en' | 'pt' | 'es';
 export const languages: Language[] = ['en', 'pt', 'es'];
 export const isLanguage = (value: string): value is Language => languages.some(lang => lang === value);

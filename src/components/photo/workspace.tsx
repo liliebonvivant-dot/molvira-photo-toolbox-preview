@@ -7,6 +7,7 @@ import { ToolCard, ToolIcon } from './tool-card';
 import { ResizeWorkspace } from './resize-workspace';
 import { CropWorkspace } from './crop-workspace';
 import { ConvertWorkspace } from './convert-workspace';
+import { CompressWorkspace } from './compress-workspace';
 function Settings({tool,lang}:{tool:Tool,lang:Language}) {
  const c=copy[lang];
  const select=(label:string,values:string[]) => <label className="setting-field" key={label}><span>{label}</span><select disabled defaultValue={values[0]}>{values.map(v=><option key={v}>{v}</option>)}</select></label>;
