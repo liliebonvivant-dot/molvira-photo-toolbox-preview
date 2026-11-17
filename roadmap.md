@@ -1,4 +1,8 @@
 # MOLVIRA PHOTO — Phase 1
+## WhatsApp Image Maker
+- [x] Implement four exact formats, editor-only profile guide, local framing and EN/PT/ES export using the Instagram interaction pattern.
+- [x] Run 257 tests (237 prior + 20 WhatsApp); verify real uploads/downloads, exact presets, guide exclusion, alpha, touch, explicit 48 MP cancellation, EN/PT/ES and ten prior pages; deliver report without publishing.
+- [ ] Owner approval and physical Safari/iPhone/iPad/Android validation (requires owner and physical devices).
 ## Instagram Image Maker
 - [x] Implement isolated local framing, exact presets/custom dimensions, rotation, touch zoom/pan, bounded history and EN/PT/ES export; preserve nine tools and experimental block.
 - [x] Run 237 tests (206 previous + 31 Instagram); verify exact preset/custom downloads, pixel-identical native PNG preview, alpha, touch pan/pinch/scroll, explicit 48 MP reduction, EN/PT/ES and nine prior pages; deliver objective report without publishing.

@@ -26,8 +26,8 @@ describe('experimental isolation boundary', () => {
     const xml = readFileSync(resolve('public/sitemap.xml'), 'utf8');
     expect(xml.match(/<loc>[^<]*experimental[^<]*<\/loc>/g) ?? []).toHaveLength(0);
   });
-  it('keeps exactly twelve public tools and no experimental catalog identity', () => {
-    expect(tools).toHaveLength(12);
+  it('keeps the authorized thirteen-tool catalog without experimental identity', () => {
+    expect(tools).toHaveLength(13);
     expect(JSON.stringify(tools)).not.toMatch(/birefnet|experimental/i);
   });
   it('detaches experimental processing imports from every route', () => {

@@ -403,3 +403,7 @@
 .instagram-page .instagram-output-offer p { margin:12px 0; overflow-wrap:anywhere; }
 .instagram-page .instagram-output-offer button { width:100%; white-space:normal; min-height:44px; height:auto; }
 @media(max-width:700px) { .instagram-page .instagram-stage canvas { max-height:420px; } }
+
+/* The profile guide overlays the shared editor only; it never enters Canvas export. */
+.instagram-page .social-canvas-wrap { position:relative; max-width:100%; line-height:0; }
+.whatsapp-page .whatsapp-profile-guide { position:absolute; inset:0; border-radius:50%; border:2px dashed var(--primary-foreground); outline:1px solid var(--foreground); outline-offset:-3px; pointer-events:none; }

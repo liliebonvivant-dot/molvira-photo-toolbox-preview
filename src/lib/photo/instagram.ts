@@ -4,7 +4,7 @@ import type { Size } from './large-image';
 import type { ImageFormat } from './resize';
 
 export const instagramPresets = { square: { width: 1080, height: 1080 }, portrait: { width: 1080, height: 1350 }, landscape: { width: 1080, height: 566 }, story: { width: 1080, height: 1920 }, reel: { width: 1080, height: 1920 } } as const;
-export type InstagramPreset = keyof typeof instagramPresets | 'custom';
+export type InstagramPreset = keyof typeof instagramPresets | 'custom' | 'profile';
 export type InstagramState = Size & { preset: InstagramPreset; fit: 'cover' | 'contain'; zoom: number; x: number; y: number; rotation: number; color: string; transparent: boolean };
 export type InstagramHistory = { past: InstagramState[]; present: InstagramState; future: InstagramState[] };
 export type InstagramSource = CollageSource;

@@ -53,3 +53,5 @@ use the editor.
 - Isolate collage UI/localization and output-coordinate Canvas composition; bound unique photo memory including undo assets, load sequentially with explicit source/output reduction, and reuse bounded encoding and gesture delivery to preserve existing processors.
 
 - Isolate Instagram UI/localization and output-coordinate rotation/framing composition shared by preview/export; reuse validated source decoding, explicit memory reductions and gesture delivery without segmentation imports to preserve existing tools.
+
+- WhatsApp uses the configurable Instagram editor and output renderer with isolated presets/copy; overlay the circular profile guide outside Canvas so shared controls stay consistent and exports never contain it.

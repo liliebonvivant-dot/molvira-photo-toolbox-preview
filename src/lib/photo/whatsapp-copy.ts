@@ -1,0 +1,21 @@
+import { instagramCopy } from './instagram-copy';
+export const whatsappCopy = {
+  en: { ...instagramCopy.en,
+    metadata: 'Create WhatsApp Status, square, landscape and profile images locally with MOLVIRA PHOTO. Frame, rotate and export JPG, PNG or WebP for free.',
+    preview: 'WhatsApp image preview', preset: 'WhatsApp format', story: 'Status · 1080 × 1920', square: 'Square image · 1080 × 1080', landscape: 'Landscape image · 1200 × 675', profile: 'Profile photo · 1080 × 1080',
+    reference: 'These dimensions are creation references. WhatsApp may crop or compress your image. The circular profile guide is not included in the exported file.',
+    guide: 'Circular profile framing guide',
+  },
+  pt: { ...instagramCopy.pt,
+    metadata: 'Crie imagens para Status, imagens quadradas, horizontais e fotos de perfil do WhatsApp localmente com MOLVIRA PHOTO. Enquadre, gire e exporte JPG, PNG ou WebP grátis.',
+    preview: 'Pré-visualização da imagem para WhatsApp', preset: 'Formato do WhatsApp', story: 'Status · 1080 × 1920', square: 'Imagem quadrada · 1080 × 1080', landscape: 'Imagem horizontal · 1200 × 675', profile: 'Foto de perfil · 1080 × 1080',
+    reference: 'Estas dimensões são referências de criação. O WhatsApp pode recortar ou comprimir a imagem. A guia circular de perfil não integra o arquivo exportado.',
+    guide: 'Guia circular de enquadramento do perfil',
+  },
+  es: { ...instagramCopy.es,
+    metadata: 'Crea imágenes para Estados, imágenes cuadradas, horizontales y fotos de perfil de WhatsApp localmente con MOLVIRA PHOTO. Encuadra, gira y exporta JPG, PNG o WebP gratis.',
+    preview: 'Vista previa de la imagen para WhatsApp', preset: 'Formato de WhatsApp', story: 'Estado · 1080 × 1920', square: 'Imagen cuadrada · 1080 × 1080', landscape: 'Imagen horizontal · 1200 × 675', profile: 'Foto de perfil · 1080 × 1080',
+    reference: 'Estas dimensiones son referencias de creación. WhatsApp puede recortar o comprimir la imagen. La guía circular de perfil no se incluye en el archivo exportado.',
+    guide: 'Guía circular de encuadre del perfil',
+  },
+};

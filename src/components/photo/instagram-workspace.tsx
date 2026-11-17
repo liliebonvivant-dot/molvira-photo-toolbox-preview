@@ -16,11 +16,26 @@ import { FileSaving } from './file-saving';
 type ErrorCode = 'fileType' | 'fileSize' | 'inputLimit' | 'decode' | 'exportError' | 'memory' | 'dimensions' | 'outputLimit';
 const errorCode = (e: unknown): ErrorCode => { const code = e instanceof Error ? e.message : 'decode'; return ['fileType', 'fileSize', 'inputLimit', 'decode', 'exportError', 'memory', 'dimensions', 'outputLimit'].includes(code) ? code as ErrorCode : 'decode'; };
 type Point = { x: number; y: number };
-export function InstagramWorkspace({ tool, lang, slug }: { tool: Tool; lang: Language; slug: string }) {
-  const c = copy[lang], r = instagramCopy[lang];
+type WorkspaceConfiguration = {
+  copy: typeof instagramCopy.en;
+  presets: Partial<Record<InstagramPreset, Size>>;
+  presetLabels?: Partial<Record<InstagramPreset, string>>;
+  initial: () => InstagramState;
+  filename: (format: ImageFormat) => string;
+  custom: boolean;
+  pageClass: string;
+  emptyIcon: ReactNode;
+  guide?: (state: InstagramState) => boolean;
+  guideLabel?: string;
+};
+const instagramConfiguration: WorkspaceConfiguration = { copy: instagramCopy.en, presets: instagramPresets, initial: initialInstagram, filename: instagramFilename, custom: true, pageClass: '', emptyIcon: <Instagram size={40}/> };
+export function InstagramWorkspace({ tool, lang, slug, configuration }: { tool: Tool; lang: Language; slug: string; configuration?: WorkspaceConfiguration }) {
+  const config = configuration ?? instagramConfiguration;
+  const c = copy[lang], r = configuration?.copy ?? instagramCopy[lang];
+  const initial = config.initial;
   const input = useRef<HTMLInputElement>(null), canvas = useRef<HTMLCanvasElement>(null), owned = useRef<InstagramSource | undefined>(undefined), alive = useRef(true), locked = useRef(false), output = useRef<string | undefined>(undefined), generation = useRef(0);
   const [source, setSource] = useState<InstagramSource>();
-  const [history, setHistory] = useState<InstagramHistory>(() => ({ past: [], present: initialInstagram(), future: [] }));
+  const [history, setHistory] = useState<InstagramHistory>(() => ({ past: [], present: initial(), future: [] }));
   const state = history.present, latest = useRef(state); latest.current = state;
   const [format, setFormat] = useState<ImageFormat>('image/png'), [quality, setQuality] = useState(95);
   const [loading, setLoading] = useState(false), [busy, setBusy] = useState(false), [error, setError] = useState<ErrorCode>(), [pending, setPending] = useState<ReduceOffer>(), [outputOffer, setOutputOffer] = useState<Size>();
@@ -33,7 +48,7 @@ export function InstagramWorkspace({ tool, lang, slug }: { tool: Tool; lang: Lan
   function change(next: InstagramState) { if (locked.current || pending || gesture.current) return; discard(); setError(undefined); setOutputOffer(undefined); latest.current = next; setHistory(h => commitInstagram(h, next)); }
   function patch(p: Partial<InstagramState>) { change({ ...state, ...p }); }
   function travel(action: (h: InstagramHistory) => InstagramHistory) { discard(); setError(undefined); setOutputOffer(undefined); setHistory(h => { const next = action(h); latest.current = next.present; return next; }); }
-  function remove() { discard(); if (owned.current) releaseInstagramSource(owned.current); owned.current = undefined; generation.current++; setSource(undefined); setPending(undefined); setError(undefined); setOutputOffer(undefined); const next = initialInstagram(); latest.current = next; setHistory({ past: [], present: next, future: [] }); }
+  function remove() { discard(); if (owned.current) releaseInstagramSource(owned.current); owned.current = undefined; generation.current++; setSource(undefined); setPending(undefined); setError(undefined); setOutputOffer(undefined); const next = initial(); latest.current = next; setHistory({ past: [], present: next, future: [] }); }
   useEffect(() => { alive.current = true; return () => { alive.current = false; if (owned.current) releaseInstagramSource(owned.current); owned.current = undefined; if (output.current) URL.revokeObjectURL(output.current); const stage = canvas.current; if (stage) { stage.width = 0; stage.height = 0; } }; }, []);
   async function add(file?: File, target?: Size) {
     if (!file || locked.current || gesture.current) return;
@@ -42,17 +57,17 @@ export function InstagramWorkspace({ tool, lang, slug }: { tool: Tool; lang: Lan
       await inspectImage(file);
       if (!alive.current) return;
       if (owned.current) releaseInstagramSource(owned.current); owned.current = undefined; setSource(undefined); generation.current++;
-      const loaded = await loadInstagramSource(file, initialInstagram(), target);
+      const loaded = await loadInstagramSource(file, initial(), target);
       if (!alive.current) { if ('image' in loaded) releaseInstagramSource(loaded); return; }
       if (!('image' in loaded)) { setPending(loaded); return; }
-      owned.current = loaded; setSource(loaded); const next = initialInstagram(); latest.current = next; setHistory({ past: [], present: next, future: [] });
+      owned.current = loaded; setSource(loaded); const next = initial(); latest.current = next; setHistory({ past: [], present: next, future: [] });
     } catch (e) {
       if (!alive.current) return;
       const code = errorCode(e);
       if (!target && (code === 'decode' || code === 'exportError')) {
         const h = await inspectImage(file).catch(() => undefined);
         if (!alive.current) return;
-        if (h && h.width * h.height > 1) { const defaults = initialInstagram(); setPending({ file, ...h, reduced: reducedDimensions(h.width, h.height, Math.max(1, Math.min(safePixelBudget() - defaults.width * defaults.height, Math.floor(h.width * h.height / 2)))) }); return; }
+        if (h && h.width * h.height > 1) { const defaults = initial(); setPending({ file, ...h, reduced: reducedDimensions(h.width, h.height, Math.max(1, Math.min(safePixelBudget() - defaults.width * defaults.height, Math.floor(h.width * h.height / 2)))) }); return; }
       }
       setError(code);
     } finally { locked.current = false; if (alive.current) setLoading(false); }
@@ -98,7 +113,7 @@ export function InstagramWorkspace({ tool, lang, slug }: { tool: Tool; lang: Lan
   const disabled = loading || busy || !!pending;
   const icon = (label: string, node: ReactNode, action: () => void, off = false) => <Button variant="outline" size="icon" title={label} aria-label={label} disabled={disabled || off} onClick={action}>{node}</Button>;
   const slider = (label: string, value: number, min: number, max: number, action: (v: number) => void, unit = '', step = 1) => <label className="setting-field"><span>{label}<small>{Math.round(value * 100) / 100}{unit}</small></span><input aria-label={label} type="range" min={min} max={max} step={step} value={value} onChange={e => action(Number(e.target.value))}/></label>;
-  return <Shell lang={lang} slug={slug}><main id="main" className="content-width tool-page resize-page instagram-page">
+  return <Shell lang={lang} slug={slug}><main id="main" className={`content-width tool-page resize-page instagram-page ${config.pageClass}`}>
     <nav className="breadcrumbs"><Link to="/$lang" params={{ lang }}>{c.home}</Link><ChevronRight size={13}/><span>{tool.titles[langIndex(lang)]}</span></nav>
     <div className="tool-page-heading"><ToolIcon tool={tool}/><div><h1>{tool.titles[langIndex(lang)]}</h1><p>{tool.descriptions[langIndex(lang)]}</p></div></div>
     <div className="phase-notice"><ShieldCheck size={18}/><p>{r.local}</p></div>
@@ -110,13 +125,13 @@ export function InstagramWorkspace({ tool, lang, slug }: { tool: Tool; lang: Lan
       {pending && <ReducePrompt offer={pending} lang={lang} onCancel={() => setPending(undefined)} onReduce={() => void add(pending.file, pending.reduced)}/>}
       {source && <p className="resize-filename">{source.file.name} · {r.original}: {source.originalWidth} × {source.originalHeight} px{source.reduced ? ` · ${r.reduced}: ${source.width} × ${source.height} px` : ''}</p>}
       <section className="preview-section"><h2>{r.preview} · {state.width} × {state.height} px</h2>
-        <div className="instagram-toolbar">{icon(r.undo, <Undo2/>, () => travel(undoInstagram), !history.past.length)}{icon(r.redo, <Redo2/>, () => travel(redoInstagram), !history.future.length)}{icon(r.rotate, <RotateCw/>, () => patch({ rotation: (state.rotation + 90) % 360 }), !source)}{icon(r.reset, <RotateCcw/>, () => change(initialInstagram()), !source)}{icon(r.remove, <Trash2/>, remove, !source)}</div>
-        <div className="instagram-stage">{source ? <canvas ref={canvas} aria-label={r.preview} tabIndex={0} onPointerDown={down} onPointerMove={move} onPointerUp={e => finish(e.pointerId)} onPointerCancel={e => finish(e.pointerId, true)} onLostPointerCapture={e => finish(e.pointerId)} onKeyDown={e => { if (disabled) return; const axis = ['ArrowLeft', 'ArrowRight'].includes(e.key) ? 'x' : ['ArrowUp', 'ArrowDown'].includes(e.key) ? 'y' : undefined; if (axis) { e.preventDefault(); patch({ [axis]: clampInstagram(state[axis] + (['ArrowLeft', 'ArrowUp'].includes(e.key) ? -1 : 1), -100, 100) }); } }}/> : <div className="resize-empty"><Instagram size={40}/><p>{r.empty}</p></div>}</div>
+        <div className="instagram-toolbar">{icon(r.undo, <Undo2/>, () => travel(undoInstagram), !history.past.length)}{icon(r.redo, <Redo2/>, () => travel(redoInstagram), !history.future.length)}{icon(r.rotate, <RotateCw/>, () => patch({ rotation: (state.rotation + 90) % 360 }), !source)}{icon(r.reset, <RotateCcw/>, () => change(initial()), !source)}{icon(r.remove, <Trash2/>, remove, !source)}</div>
+        <div className="instagram-stage">{source ? <div className="social-canvas-wrap"><canvas ref={canvas} aria-label={r.preview} tabIndex={0} onPointerDown={down} onPointerMove={move} onPointerUp={e => finish(e.pointerId)} onPointerCancel={e => finish(e.pointerId, true)} onLostPointerCapture={e => finish(e.pointerId)} onKeyDown={e => { if (disabled) return; const axis = ['ArrowLeft', 'ArrowRight'].includes(e.key) ? 'x' : ['ArrowUp', 'ArrowDown'].includes(e.key) ? 'y' : undefined; if (axis) { e.preventDefault(); patch({ [axis]: clampInstagram(state[axis] + (['ArrowLeft', 'ArrowUp'].includes(e.key) ? -1 : 1), -100, 100) }); } }}/>{config.guide?.(state) && <span className="whatsapp-profile-guide" role="img" aria-label={config.guideLabel}/>}</div> : <div className="resize-empty">{config.emptyIcon}<p>{r.empty}</p></div>}</div>
         <p role="status" className="instagram-status settings-hint">{loading || busy ? r.processing : '\u00a0'}</p><p className="settings-hint">{r.reference}</p>
       </section>
     </div><aside className="settings-panel"><h2>{c.settings}</h2><fieldset className="resize-fields" disabled={disabled}>
-      <label className="setting-field"><span>{r.preset}</span><select aria-label={r.preset} value={state.preset} onChange={e => { const preset = e.target.value as InstagramPreset; patch({ preset, ...(preset === 'custom' ? {} : instagramPresets[preset]) }); }}><option value="custom">{r.custom}</option>{(Object.keys(instagramPresets) as (keyof typeof instagramPresets)[]).map(p => <option key={p} value={p}>{r[p]}</option>)}</select></label>
-      <div className="settings-two">{(['width', 'height'] as const).map(axis => <label key={axis} className="setting-field"><span>{r[axis]}</span><input aria-label={r[axis]} type="number" min={1} max={12000} step={1} value={state[axis]} onChange={e => patch({ preset: 'custom', [axis]: Number(e.target.value) })}/></label>)}</div>
+      <label className="setting-field"><span>{r.preset}</span><select aria-label={r.preset} value={state.preset} onChange={e => { const preset = e.target.value as InstagramPreset; patch({ preset, ...(config.presets[preset] ?? {}) }); }}>{(config.custom || state.preset === 'custom') && <option value="custom">{r.custom}</option>}{(Object.keys(config.presets) as InstagramPreset[]).map(p => <option key={p} value={p}>{config.presetLabels?.[p] ?? (p in r ? r[p as keyof typeof r] : '')}</option>)}</select></label>
+      {config.custom && <div className="settings-two">{(['width', 'height'] as const).map(axis => <label key={axis} className="setting-field"><span>{r[axis]}</span><input aria-label={r[axis]} type="number" min={1} max={12000} step={1} value={state[axis]} onChange={e => patch({ preset: 'custom', [axis]: Number(e.target.value) })}/></label>)}</div>}
       <div className="instagram-fit" role="group" aria-label={r.framing}><Button variant={state.fit === 'cover' ? 'default' : 'outline'} aria-pressed={state.fit === 'cover'} onClick={() => patch({ fit: 'cover', zoom: 1 })}>{r.cover}</Button><Button variant={state.fit === 'contain' ? 'default' : 'outline'} aria-pressed={state.fit === 'contain'} onClick={() => patch({ fit: 'contain', zoom: 1 })}>{r.contain}</Button></div>
       {slider(r.zoom, state.zoom, .1, 4, zoom => patch({ zoom }), '×', .01)}{slider(r.x, state.x, -100, 100, x => patch({ x }), '%')}{slider(r.y, state.y, -100, 100, y => patch({ y }), '%')}
       <label className="setting-field"><span>{r.background}</span><input aria-label={r.background} type="color" value={state.color} onChange={e => patch({ color: e.target.value })}/></label>
@@ -126,7 +141,7 @@ export function InstagramWorkspace({ tool, lang, slug }: { tool: Tool; lang: Lan
     </fieldset><p className="settings-hint">{r.jpg}</p>{error && <p role="alert" className="resize-error">{r[error]}</p>}
       {outputOffer && <div className="instagram-output-offer"><h3>{r.reduceTitle}</h3><p>{state.width} × {state.height} → {outputOffer.width} × {outputOffer.height} px</p><Button variant="outline" onClick={() => change({ ...state, ...outputOffer, preset: 'custom' })}>{r.reduce}</Button><Button variant="ghost" onClick={() => setOutputOffer(undefined)}>{r.cancel}</Button></div>}
       <Button className="resize-download mt-5" variant="outline" disabled={!source || disabled} onClick={() => void prepare()}>{busy ? <LoaderCircle className="animate-spin"/> : <Wand2/>}{busy ? r.processing : r.prepare}</Button>
-      <FileSaving lang={lang} result={current} filename={instagramFilename(format)} title={c.export} label={r.download} processing={r.processing} busy={busy || loading} disabled={!current || !!pending || !!error} mode="auto"/>
+      <FileSaving lang={lang} result={current} filename={config.filename(format)} title={c.export} label={r.download} processing={r.processing} busy={busy || loading} disabled={!current || !!pending || !!error} mode="auto"/>
     </aside></div><ReservedSpace lang={lang}/>
   </main></Shell>;
 }
