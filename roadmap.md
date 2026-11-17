@@ -1,4 +1,9 @@
 # MOLVIRA PHOTO — Phase 1
+## Stage 1 — Technical corrections and consistency
+- [x] Normalize editor prices using the existing Product Ad behavior; align EN/PT/ES availability and privacy copy without changing SEO.
+- [x] Bound White Background source handling with explicit reduction and resource cleanup, retaining composition and all formats.
+- [x] Run 348 tests and browser regressions (39 pages, 10 real downloads, native PNG identity, 48 MP consent/cancellation, forced encoding failure/retry); deliver an evidence-based report without publication.
+- [ ] Owner validation and physical-device checks remain required before publication (requires owner approval and physical devices).
 ## E-commerce Image Maker
 - [x] Implement isolated local product framing, five exact presets/custom dimensions, margins, centering, original/result previews and EN/PT/ES with existing validation/memory/delivery; preserve all twelve prior processors.
 - [x] Run 336 tests (300 prior + 36 E-commerce); verify JPG/PNG/WebP uploads, 22 real exports, exact presets/custom dimensions, native PNG identity, alpha/JPG opacity, margins/centering, touch/layout, language continuity, 48 MP cancellation and twelve prior pages; report without publishing.

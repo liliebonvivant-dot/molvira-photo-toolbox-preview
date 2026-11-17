@@ -10,6 +10,7 @@ const en = {
   fileType: 'Choose a valid PNG or WebP image.', fileSize: 'This file exceeds 20 MiB.', inputLimit: 'Use up to 50 megapixels and 12,000 pixels per side.',
   decode: 'This image could not be opened.', exportError: 'Your device could not process this image at its original resolution in this format. Try another format or file; no automatic resizing is applied.',
   retry: 'Try again', metadata: 'Add pure white to transparent PNG and WebP images locally. Keep original dimensions, compare before and after, and export JPG, PNG or WebP. Existing backgrounds are not removed.',
+  workingResolution: 'Reduced working-copy dimensions',
 };
 export const whiteBackgroundCopy: Record<Language, typeof en> = {
   en,
@@ -24,6 +25,7 @@ export const whiteBackgroundCopy: Record<Language, typeof en> = {
     fileType: 'Escolha uma imagem PNG ou WebP válida.', fileSize: 'Este arquivo excede 20 MiB.', inputLimit: 'Use até 50 megapixels e 12.000 pixels por lado.',
     decode: 'Não foi possível abrir esta imagem.', exportError: 'O dispositivo não conseguiu processar a resolução original neste formato. Tente outro formato ou arquivo; não há redimensionamento automático.',
     retry: 'Tentar novamente', metadata: 'Adicione branco puro a imagens PNG e WebP transparentes localmente. Preserve as dimensões, compare antes e depois e exporte JPG, PNG ou WebP. Fundos existentes não são removidos.',
+    workingResolution: 'Dimensões da cópia de trabalho reduzida',
   },
   es: {
     original: 'Imagen original', result: 'Fondo blanco', another: 'Elegir otra imagen', processing: 'Procesando…', download: 'Descargar imagen',
@@ -36,5 +38,6 @@ export const whiteBackgroundCopy: Record<Language, typeof en> = {
     fileType: 'Elige una imagen PNG o WebP válida.', fileSize: 'Este archivo supera 20 MiB.', inputLimit: 'Usa hasta 50 megapíxeles y 12.000 píxeles por lado.',
     decode: 'No se pudo abrir esta imagen.', exportError: 'El dispositivo no pudo procesar la resolución original en este formato. Prueba otro formato o archivo; no se aplica redimensionado automático.',
     retry: 'Reintentar', metadata: 'Añade blanco puro a PNG y WebP transparentes localmente. Conserva las dimensiones, compara antes y después y exporta JPG, PNG o WebP. No se eliminan fondos existentes.',
+    workingResolution: 'Dimensiones de la copia de trabajo reducida',
   },
 };

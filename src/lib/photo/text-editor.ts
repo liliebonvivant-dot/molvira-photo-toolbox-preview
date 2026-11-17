@@ -1,4 +1,5 @@
 import { canvasBlob } from './canvas-blob';
+import { displayPrice } from './currency';
 import { conversionDimensionError } from './convert';
 import type { ImageFormat } from './resize';
 
@@ -37,7 +38,7 @@ export function duplicateLayer(layers: EditorLayer[], id: string, nextId: string
   const index = layers.indexOf(layer);
   return [...layers.slice(0, index + 1), { ...layer, id: nextId, x: clamp(layer.x + 3, 0, 95), y: clamp(layer.y + 3, 0, 95) }, ...layers.slice(index + 1)];
 }
-export function layerText(layer: EditorLayer) { return layer.kind === 'price' ? `${layer.currency} ${layer.text}` : layer.text; }
+export function layerText(layer: EditorLayer) { return layer.kind === 'price' ? displayPrice(layer.text, layer.currency) : layer.text; }
 function font(layer: EditorLayer, size: number) {
   return `${layer.italic ? 'italic ' : ''}${layer.bold ? 'bold ' : ''}${size}px "${editorFonts.find(f => f === layer.font) ?? 'Arial'}"`;
 }

@@ -4,7 +4,7 @@ import { ChevronRight, ImagePlus, Type, BadgeDollarSign, Stamp, Undo2, Redo2, Co
 import { Button } from '@/components/ui/button';
 import { copy, langIndex, type Language, type Tool } from '@/lib/photo/content';
 import { textEditorCopy } from '@/lib/photo/text-editor-copy';
-import { clamp, commitLayers, currencies, drawEditor, duplicateLayer, editorFilename, editorFonts, editorLimits, encodeEditor, hitLayer, newLayer, redoLayers, reorderLayer, undoLayers, type EditorHistory, type EditorLayer, type LayerRect } from '@/lib/photo/text-editor';
+import { clamp, commitLayers, currencies, drawEditor, duplicateLayer, editorFilename, editorFonts, editorLimits, encodeEditor, hitLayer, layerText, newLayer, redoLayers, reorderLayer, undoLayers, type EditorHistory, type EditorLayer, type LayerRect } from '@/lib/photo/text-editor';
 import { inspectImage, type ImageFormat } from '@/lib/photo/resize';
 import { loadWatermarkSource, releaseWatermarkSource, watermarkReduceOffer, type WatermarkSource } from '@/lib/photo/watermark-source';
 import type { ReduceOffer, Size } from '@/lib/photo/large-image';
@@ -118,7 +118,7 @@ export function TextEditorWorkspace({ tool, lang, slug }: { tool: Tool; lang: La
   }
   const iconButton = (label: string, icon: ReactNode, action: () => void, disabled = false) => <Button variant="outline" size="icon" title={label} aria-label={label} onClick={action} disabled={disabled}>{icon}</Button>;
   const slider = (name: 'size' | 'opacity' | 'x' | 'y', label: string, min: number, max: number) => active && <label className="setting-field"><span>{label}<small>{Math.round(active[name] * 10) / 10}%</small></span><input aria-label={label} type="range" min={min} max={max} step={.5} value={active[name]} onChange={e => update({ [name]: Number(e.target.value) })}/></label>;
-  const layerName = (l: EditorLayer) => l.kind === 'logo' ? r.logoName : l.text.trim() ? (l.kind === 'price' ? `${l.currency} ${l.text}` : l.text) : l.kind === 'price' ? r.priceName : r.textName;
+  const layerName = (l: EditorLayer) => l.kind === 'logo' ? r.logoName : l.text.trim() ? layerText(l) : l.kind === 'price' ? r.priceName : r.textName;
   return <Shell lang={lang} slug={slug}><main id="main" className="content-width tool-page resize-page text-editor-page">
     <nav className="breadcrumbs"><Link to="/$lang" params={{ lang }}>{c.home}</Link><ChevronRight size={13}/><span>{tool.titles[langIndex(lang)]}</span></nav>
     <div className="tool-page-heading"><ToolIcon tool={tool}/><div><h1>{tool.titles[langIndex(lang)]}</h1><p>{tool.descriptions[langIndex(lang)]}</p></div></div>

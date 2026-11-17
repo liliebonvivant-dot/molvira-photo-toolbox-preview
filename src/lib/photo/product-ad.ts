@@ -1,4 +1,5 @@
 import { canvasBlob } from './canvas-blob';
+import { displayPrice } from './currency';
 import { collageOutputError, loadCollageSource, sourceAllowance, type CollageSource, type Cell } from './collage';
 import { instagramPlacement } from './instagram';
 import { clamp, editorFonts, type LayerRect } from './text-editor';
@@ -34,13 +35,7 @@ export function resetAd(s: AdState): AdState { return selectAdFormat(selectAdTem
 export function adPhotoCell(s: AdState): Cell { return { x: s.width * .05, y: s.height * (s.template === 'catalog' ? .15 : .12), width: s.width * .9, height: s.height * (s.template === 'catalog' ? .53 : .49) }; }
 export function adDisplayText(s: AdState, key: AdField) {
   if (key !== 'price' && key !== 'oldPrice') return s.texts[key].text;
-  const currency = s.currency.trim();
-  const escaped = currency.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  // Remove only boundary currency markers, never parse or reformat the literal amount.
-  const marker = `(?:${escaped ? `${escaped}|` : ''}R\\$|US\\$|CA\\$|AU\\$|BRL|USD|EUR|GBP|\\p{Sc})`;
-  const boundary = new RegExp(`^(?:${marker}\\s*)+|(?:\\s*${marker})+$`, 'gu');
-  const amount = s.texts[key].text.trim().replace(boundary, '').trim();
-  return amount ? `${currency} ${amount}`.trim() : '';
+  return displayPrice(s.texts[key].text, s.currency);
 }
 export function visibleAdFields(s: AdState): AdField[] { return adFields.filter(k => adDisplayText(s,k).trim()); }
 function font(t: AdText, size: number, bold: boolean) { return `${bold ? 'bold ' : ''}${size}px "${editorFonts.find(f => f === t.font) ?? 'Arial'}"`; }

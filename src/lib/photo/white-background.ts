@@ -1,5 +1,6 @@
 import { canvasBlob } from './canvas-blob';
-import { inspectImage, type ImageFormat } from './resize';
+import { imageHeader, resizeLimits, validDimensions, type ImageFormat } from './resize';
+import { decodeLocal, type Decoded, type Size } from './large-image';
 
 export function alphaChannel(bytes: Uint8Array): boolean {
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
@@ -43,12 +44,28 @@ export function flattenWhite(pixels: Uint8ClampedArray): boolean {
 }
 
 export async function inspectWhiteImage(file: File) {
-  const header = await inspectImage(file);
+  if (file.size > resizeLimits.fileBytes) throw new Error('fileSize');
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const header = imageHeader(bytes);
+  if (!header) throw new Error('fileType');
   if (header.format !== 'image/png' && header.format !== 'image/webp') throw new Error('fileType');
-  return { ...header, channel: alphaChannel(new Uint8Array(await file.arrayBuffer())) };
+  if (!validDimensions(header.width, header.height)) throw new Error('decode');
+  if (header.width > resizeLimits.side || header.height > resizeLimits.side || header.width * header.height > resizeLimits.pixels) throw new Error('inputLimit');
+  return { ...header, channel: alphaChannel(bytes) };
 }
 
-export async function encodeWhite(image: HTMLImageElement, format: ImageFormat, quality: number) {
+export type WhiteSource = Decoded & { file: File; channel: boolean };
+export async function loadWhiteSource(file: File, header: Awaited<ReturnType<typeof inspectWhiteImage>>, target?: Size) {
+  const decoded = await decodeLocal(file, header, target);
+  return 'image' in decoded ? { ...decoded, file, channel: header.channel } : decoded;
+}
+export function releaseWhiteSource(source?: WhiteSource) {
+  if (!source) return;
+  source.image.src = ''; URL.revokeObjectURL(source.url);
+}
+
+export async function encodeWhite(image: HTMLImageElement, format: ImageFormat, quality: number, signal?: AbortSignal) {
+  if (signal?.aborted) throw new Error('cancelled');
   const width = image.naturalWidth, height = image.naturalHeight;
   if (!width || !height) throw new Error('decode');
   const canvas = document.createElement('canvas');
@@ -58,14 +75,16 @@ export async function encodeWhite(image: HTMLImageElement, format: ImageFormat, 
     const context = canvas.getContext('2d', { willReadFrequently: true });
     if (!context) throw new Error('exportError');
     context.drawImage(image, 0, 0);
-    // Bound extra pixel memory to roughly 4 MiB; never create a reduced working copy.
+    // Bound extra pixel memory to roughly 4 MiB at the chosen working resolution.
     const rows = Math.max(1, Math.floor(1_048_576 / width));
     for (let y = 0; y < height; y += rows) {
+      if (signal?.aborted) throw new Error('cancelled');
       const pixels = context.getImageData(0, y, width, Math.min(rows, height - y));
       transparent = flattenWhite(pixels.data) || transparent;
       context.putImageData(pixels, 0, y);
       await new Promise<void>(resolve => setTimeout(resolve, 0));
     }
+    if (signal?.aborted) throw new Error('cancelled');
     const blob = await canvasBlob(canvas, format, quality);
     return { blob, transparent, width, height };
   } catch {

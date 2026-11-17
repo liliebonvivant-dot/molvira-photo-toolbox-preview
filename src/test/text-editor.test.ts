@@ -15,6 +15,15 @@ describe('independent editable local layers', () => {
   it.each(currencies)('keeps the literal price value with %s, without currency conversion', currency => {
     expect(layerText({ ...newLayer('price', 'price'), currency, text: '1.234,56' })).toBe(`${currency} 1.234,56`);
   });
+  it.each([
+    ['R$', 'R$ 19,90', 'R$ 19,90'], ['R$', '19,90', 'R$ 19,90'],
+    ['$', 'USD 2,345.67', '$ 2,345.67'], ['€', '1.234,56 €', '€ 1.234,56'],
+    ['£', '$ 1,234.56', '£ 1,234.56'], ['R$', 'R$ R$ 19,90', 'R$ 19,90'],
+    ['$', '€', ''],
+  ] as const)('normalizes recognized markers in %s / %s without altering the amount', (currency, text, expected) => {
+    const layer = { ...newLayer('price', 'price'), currency, text };
+    expect(layerText(layer)).toBe(expected); expect(layer.text).toBe(text);
+  });
   it('brings a layer to front and sends it to back', () => {
     const layers = [newLayer('a', 'text'), newLayer('b', 'price'), newLayer('c', 'logo')];
     expect(reorderLayer(layers, 'a', 'front').map(l => l.id)).toEqual(['b', 'c', 'a']);
