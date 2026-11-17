@@ -1,4 +1,8 @@
 # MOLVIRA PHOTO — Phase 1
+## E-commerce Image Maker
+- [x] Implement isolated local product framing, five exact presets/custom dimensions, margins, centering, original/result previews and EN/PT/ES with existing validation/memory/delivery; preserve all twelve prior processors.
+- [x] Run 336 tests (300 prior + 36 E-commerce); verify JPG/PNG/WebP uploads, 22 real exports, exact presets/custom dimensions, native PNG identity, alpha/JPG opacity, margins/centering, touch/layout, language continuity, 48 MP cancellation and twelve prior pages; report without publishing.
+- [ ] Owner practical approval and physical Safari/iPhone/iPad/Android checks (requires owner and physical devices).
 ## Product Ad final adjustments
 - [x] Normalize current/previous price currency display and show optional previous price across existing models without altering input values or positioning controls.
 - [x] Verify 12 actual JPG/PNG/WebP exports, pixel-identical PNG preview, four exact formats/chosen price positions, five models, EN/PT/ES and eleven prior pages; 300 regression tests passed; report without publishing.

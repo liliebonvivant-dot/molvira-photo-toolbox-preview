@@ -416,3 +416,6 @@
 .product-ad-page .ad-logo-controls>p { width:100%; }
 .product-ad-page .ad-content-fields .settings-two { grid-template-columns:1fr; }
 @media(max-width:700px) { .product-ad-page .setting-field textarea { font-size:16px; }.product-ad-page .workspace-main { padding:16px; } }
+
+/* E-commerce additions never change the preceding editors. */
+.ecommerce-page .ecommerce-original { height:170px; }

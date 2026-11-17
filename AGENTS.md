@@ -57,3 +57,5 @@ use the editor.
 - WhatsApp uses the configurable Instagram editor and output renderer with isolated presets/copy; overlay the circular profile guide outside Canvas so shared controls stay consistent and exports never contain it.
 
 - Isolate Product Ad UI/copy and output-coordinate Canvas composition; reuse local validation, explicit source reductions and delivery, retain photo/logo assets only while bounded history references them, and render native preset pixels in preview for PNG fidelity without touching prior editors.
+- Isolate E-commerce UI/copy and margin-clipped output composition; reuse social placement, source budgets, bounded encoding and delivery without changing existing editors, and bound previews to 4 MP so exact preset pixels remain inspectable without unbounded custom allocations.
+- Dispatch catalog tools through a typed workspace registry now that every tool has a local processor; this removes unreachable presentation-only fallbacks without changing individual editors.
