@@ -335,5 +335,6 @@
 @media(max-width:700px) { .watermark-stage canvas { max-height:340px; }.watermark-page .setting-field input[type=range] { min-height:32px; } }
 
 .watermark-page { overflow-anchor:none; }
-.watermark-page input[type=range] { touch-action:none; }
+.tool-page input[type=range] { touch-action:none; }
+.tool-page { overflow-anchor:none; }
 .watermark-status { min-height:1.5em; }
