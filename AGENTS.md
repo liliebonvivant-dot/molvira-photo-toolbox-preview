@@ -55,3 +55,5 @@ use the editor.
 - Isolate Instagram UI/localization and output-coordinate rotation/framing composition shared by preview/export; reuse validated source decoding, explicit memory reductions and gesture delivery without segmentation imports to preserve existing tools.
 
 - WhatsApp uses the configurable Instagram editor and output renderer with isolated presets/copy; overlay the circular profile guide outside Canvas so shared controls stay consistent and exports never contain it.
+
+- Isolate Product Ad UI/copy and output-coordinate Canvas composition; reuse local validation, explicit source reductions and delivery, retain photo/logo assets only while bounded history references them, and render native preset pixels in preview for PNG fidelity without touching prior editors.

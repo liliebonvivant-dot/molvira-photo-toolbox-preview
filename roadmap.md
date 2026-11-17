@@ -1,4 +1,8 @@
 # MOLVIRA PHOTO — Phase 1
+## Product Ad Maker
+- [x] Implement five editable templates, exact formats, local photo/logo composition, history, EN/PT/ES and existing delivery without changing eleven tools.
+- [x] Run 293 tests (257 prior + 36 new), real JPG/PNG/WebP downloads, four exact presets, PNG pixel fidelity, upload/replacement/logo/reset, EN/PT/ES, touch/layout, explicit 48 MP cancellation and eleven prior pages; deliver report without publishing.
+- [ ] Owner approval and physical Safari/iPhone/iPad/Android validation (requires owner and physical devices).
 ## WhatsApp Image Maker
 - [x] Implement four exact formats, editor-only profile guide, local framing and EN/PT/ES export using the Instagram interaction pattern.
 - [x] Run 257 tests (237 prior + 20 WhatsApp); verify real uploads/downloads, exact presets, guide exclusion, alpha, touch, explicit 48 MP cancellation, EN/PT/ES and ten prior pages; deliver report without publishing.
