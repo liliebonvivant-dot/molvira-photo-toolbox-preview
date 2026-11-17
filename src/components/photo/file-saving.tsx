@@ -6,9 +6,9 @@ import { savingCopy } from '@/lib/photo/saving-copy';
 import { deliverConversion, type DeliveryOutcome } from '@/lib/photo/convert-delivery';
 
 type Result = { blob: Blob; url: string; key: string };
-export function FileSaving({ lang, result, filename, title, label, processing, busy, disabled }: {
+export function FileSaving({ lang, result, filename, title, label, processing, busy, disabled, mode = 'download' }: {
   lang: Language; result: Result | undefined; filename: string; title: string; label: string;
-  processing: string; busy: boolean; disabled: boolean;
+  processing: string; busy: boolean; disabled: boolean; mode?: 'auto' | 'download';
 }) {
   const r = savingCopy[lang], id = useRef(0);
   const [status, setStatus] = useState<{ key: string; value: DeliveryOutcome | 'saving' }>();
@@ -24,9 +24,10 @@ export function FileSaving({ lang, result, filename, title, label, processing, b
     if (!result || disabled || busy) return;
     const request = ++id.current;
     setStatus({ key, value: 'saving' });
-    const value = await deliverConversion(result.blob, filename, mode);
+    const value = await deliverConversion(result.blob, filename, mode === 'download' ? primaryMode : mode);
     if (request === id.current) setStatus({ key, value });
   }
+  const primaryMode = mode;
   return <div className="export-section"><h3>{title}</h3>
     <Button className="resize-download" size="lg" disabled={disabled || busy || value === 'saving'} onClick={() => void save('download')}>
       {busy || value === 'saving' ? <LoaderCircle className="animate-spin"/> : <Download/>}{busy ? processing : value === 'saving' ? r.saving : label}

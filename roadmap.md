@@ -33,3 +33,7 @@
 - [x] Reuse delivery feedback and manual open/share alternatives, retaining existing primary downloads and editing behavior.
 - [x] Verify all three processors in EN/PT/ES, reduced images, valid downloads, errors and editing regressions without publishing.
 - [ ] Await the owner's manual iPhone validation (requires a physical Apple device).
+
+## Phase 2.4 — Compress Images only
+- [ ] Implement local compression, truthful size comparison, PNG lossless optimization, HEIF reuse and optional resolution reduction in EN/PT/ES.
+- [ ] Verify real encodings/downloads, large images, orientation, languages, layouts and existing processors; deliver report without publishing.
