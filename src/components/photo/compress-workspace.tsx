@@ -73,7 +73,7 @@ export function CompressWorkspace({ tool, lang, slug }: { tool: Tool; lang: Lang
    localUrls.forEach(revoke);
    if (id === request.current) {
     try { const header = await inspectConversion(file); const offer = !target ? fallbackOffer(file, header.width, header.height) : undefined;
-     if (offer && errorCode(e) !== 'heicError') setPending(offer); else setError(errorCode(e));
+     if (offer) setPending(offer); else setError(errorCode(e));
     } catch { setError(errorCode(e)); }
    }
   } finally { if (id === request.current) setLoading(false); }
