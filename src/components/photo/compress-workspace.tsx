@@ -32,6 +32,8 @@ export function CompressWorkspace({ tool, lang, slug }: { tool: Tool; lang: Lang
  const key = `${source?.url}|${format}|${format === 'image/png' ? 100 : quality}`;
  const current = !loading && result?.key === key ? result : undefined;
  const originalResult = useMemo(() => source ? { blob: source.file, url: source.originalUrl, key: source.originalUrl } : undefined, [source]);
+ function chooseFormat(value: ImageFormat) { setError(undefined); setFormat(value); }
+ function chooseQuality(value: number) { setError(undefined); setQuality(value); }
  const level = (Object.keys(compressionLevels) as (keyof typeof compressionLevels)[]).find(k => compressionLevels[k] === quality) ?? 'custom';
  function own(blob: Blob) { const url = URL.createObjectURL(blob); urls.current.add(url); return url; }
  function revoke(url: string) { URL.revokeObjectURL(url); urls.current.delete(url); }
