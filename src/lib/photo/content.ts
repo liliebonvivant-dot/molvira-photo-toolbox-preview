@@ -1,6 +1,7 @@
 import { resizeCopy } from './resize-copy';
 import { cropCopy } from './crop-copy';
 import { convertCopy } from './convert-copy';
+import { compressCopy } from './compress-copy';
 export type Language = 'en' | 'pt' | 'es';
 export const languages: Language[] = ['en', 'pt', 'es'];
 export const isLanguage = (value: string): value is Language => languages.some(lang => lang === value);
@@ -41,7 +42,7 @@ export function equivalentSlug(lang:Language, slug:string, next:Language) {
 export function pageHead(lang:Language, slug?:string) {
  const c=copy[lang]; const resolved=slug ? resolvePage(lang,slug) : {tool:undefined,institution:undefined};
  const title=resolved.tool ? resolved.tool.titles[langIndex(lang)] : resolved.institution ? c[resolved.institution] : c.headline;
- const description=resolved.tool ? resolved.tool.id==='resize' ? resizeCopy[lang].metadata : resolved.tool.id==='crop' ? cropCopy[lang].metadata : resolved.tool.id==='convert' ? convertCopy[lang].metadata : `${resolved.tool.descriptions[langIndex(lang)]} ${c.development}.` : resolved.institution ? c.institutionIntro : c.description;
+ const description=resolved.tool ? resolved.tool.id==='resize' ? resizeCopy[lang].metadata : resolved.tool.id==='crop' ? cropCopy[lang].metadata : resolved.tool.id==='convert' ? convertCopy[lang].metadata : resolved.tool.id==='compress' ? compressCopy[lang].metadata : `${resolved.tool.descriptions[langIndex(lang)]} ${c.development}.` : resolved.institution ? c.institutionIntro : c.description;
  const path=slug ? `/${lang}/${slug}` : `/${lang}`;
  return {meta:[{title:`${title} — MOLVIRA PHOTO`},{name:'description',content:description},{property:'og:title',content:`${title} — MOLVIRA PHOTO`},{property:'og:description',content:description},{property:'og:type',content:'website'},{property:'og:url',content:path},{name:'twitter:card',content:'summary_large_image'},{name:'robots',content:'noindex, nofollow'}],links:[{rel:'canonical',href:path},...languages.map(next=>({rel:'alternate',hrefLang:next==='pt'?'pt-BR':next,href:slug?`/${next}/${equivalentSlug(lang,slug,next)??''}`:`/${next}`})),{rel:'alternate',hrefLang:'x-default',href:slug?`/en/${equivalentSlug(lang,slug,'en')??''}`:'/en'}]};
 }
