@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { ChevronRight, ImagePlus, Image as ImageIcon, ShieldCheck, LoaderCircle, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -31,6 +31,7 @@ export function CompressWorkspace({ tool, lang, slug }: { tool: Tool; lang: Lang
  const [error, setError] = useState<ErrorCode>(), [pending, setPending] = useState<ReduceOffer>(), [retry, setRetry] = useState(0);
  const key = `${source?.url}|${format}|${format === 'image/png' ? 100 : quality}`;
  const current = !loading && result?.key === key ? result : undefined;
+ const originalResult = useMemo(() => source ? { blob: source.file, url: source.originalUrl, key: source.originalUrl } : undefined, [source]);
  const level = (Object.keys(compressionLevels) as (keyof typeof compressionLevels)[]).find(k => compressionLevels[k] === quality) ?? 'custom';
  function own(blob: Blob) { const url = URL.createObjectURL(blob); urls.current.add(url); return url; }
  function revoke(url: string) { URL.revokeObjectURL(url); urls.current.delete(url); }
@@ -79,7 +80,7 @@ export function CompressWorkspace({ tool, lang, slug }: { tool: Tool; lang: Lang
  }
  useEffect(() => {
   let cancelled = false, output: string | undefined;
-  setResult(undefined); setBusy(false); setError(undefined);
+  setResult(undefined); setBusy(false);
   if (!source || loading) return;
   setBusy(true);
   const timer = setTimeout(async () => {
@@ -125,8 +126,8 @@ export function CompressWorkspace({ tool, lang, slug }: { tool: Tool; lang: Lang
    <p className="settings-hint mt-4">{r.limits}</p><p className="settings-hint mt-4">{r.heicInfo}</p>
    {error && <p role="alert" className="resize-error">{r[error]}</p>}
    <FileSaving lang={lang} result={current} filename={compressionName(source?.file.name ?? 'image', format)} title={c.export} label={r.download} processing={r.processing} busy={busy || loading} disabled={!current || !!error || !!pending} mode="auto"/>
-   {error && source && !pending && <Button variant="outline" onClick={() => setRetry(n => n + 1)}><RotateCcw/>{r.retry}</Button>}
-   {source && current && <FileSaving lang={lang} result={{ blob: source.file, url: source.originalUrl, key: source.originalUrl }} filename={source.file.name} title={r.original} label={r.keep} processing={r.processing} busy={loading} disabled={false} mode="auto"/>}
+   {error && source && !pending && <Button variant="outline" onClick={() => { setError(undefined); setRetry(n => n + 1); }}><RotateCcw/>{r.retry}</Button>}
+   {source && current && <FileSaving lang={lang} result={originalResult} filename={source.file.name} title={r.original} label={r.keep} processing={r.processing} busy={loading} disabled={false} mode="auto"/>}
   </aside></div>
   <ReservedSpace lang={lang}/>
   <section className="how-section"><h2>{r.how}</h2><div className="steps-grid">{[[r.first,r.firstDesc],[r.second,r.secondDesc],[r.third,r.thirdDesc]].map(([title,desc],n) => <div key={title}><span className="step-number">{n + 1}</span><h3>{title}</h3><p>{desc}</p></div>)}</div></section>
