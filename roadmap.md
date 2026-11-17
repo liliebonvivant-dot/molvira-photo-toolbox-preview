@@ -3,7 +3,8 @@
 - [x] Verify exact official revision, author MIT permissions, original LFS identity, exported SHA256 and existing runtime/dependencies before reuse.
 - [x] Evaluate conversion/INT8 infrastructure; stop quantization because ONNX/PyTorch/export packages are unavailable, without enabling routes or installing dependencies.
 - [x] Execute internal FP32/letterbox Chromium inference and transparent PNG on a synthetic fixture; run regression/isolation checks and report new versus historical evidence.
-- [ ] Compare IMG.LY/BiRefNet on the five authorized photo categories (owner agreed to resend; attachments still required).
+- [x] Compare IMG.LY/BiRefNet on the three received 1536×1024 photos: six actual PNGs, full-size edge inspection and performance caveats; 353 regression tests passed, public tools unchanged and experimental access remains 404.
+- [ ] Complete all five categories with a dedicated simple-background product and narrow-detail object (requires additional owner photographs; current watch covers product/complex background and some narrow details only).
 - [ ] Validate physical browsers, model-memory feasibility and remaining training-data rights before any replacement/publication (requires devices and legal review).
 ## Stage 1 — Technical corrections and consistency
 - [x] Normalize editor prices using the existing Product Ad behavior; align EN/PT/ES availability and privacy copy without changing SEO.
