@@ -17,7 +17,7 @@
 - Telas 1280×1800, 768×1024, 491×967 e 375×812 sem transbordamento horizontal; composição de teste sem cortes ou sobreposição entre textos/preços.
 - As onze páginas anteriores abriram com HTTP 200, sem erros de JavaScript. BiRefNet permaneceu HTTP 404. Nenhum POST de imagem nem download de modelo ocorreu durante essas verificações.
 - Nenhuma biblioteca instalada. Alterações de execução limitadas a `src/lib/photo/product-ad.ts`; testes e roteiro atualizados.
-- A prévia foi exercitada após as alterações e o servidor registrou o empacotamento atualizado. O arquivo específico `/tmp/observability/build-errors.log` não estava disponível nesta sessão; não foi executada compilação manual.
+- A prévia foi exercitada após as alterações; a verificação final de `/tmp/observability/build-errors.log` confirmou **build OK** (22:09:11 UTC). Não foi executada compilação manual.
 
 ## Pendências e limites
 - Aprovação do proprietário e testes em aparelhos físicos Safari/iPhone/iPad/Android permanecem necessários; Chromium e tamanhos de tela não certificam esses aparelhos.
