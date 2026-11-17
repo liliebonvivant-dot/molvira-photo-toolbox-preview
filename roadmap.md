@@ -35,5 +35,6 @@
 - [ ] Await the owner's manual iPhone validation (requires a physical Apple device).
 
 ## Phase 2.4 — Compress Images only
-- [ ] Implement local compression, truthful size comparison, PNG lossless optimization, HEIF reuse and optional resolution reduction in EN/PT/ES.
-- [ ] Verify real encodings/downloads, large images, orientation, languages, layouts and existing processors; deliver report without publishing.
+- [x] Implement local compression, truthful size comparison, PNG lossless optimization, HEIF reuse and optional resolution reduction in EN/PT/ES.
+- [x] Verify real encodings/downloads, large images, orientation, languages, layouts and existing processors; deliver report without publishing.
+- [ ] Validate compression and native file saving on physical iPhone/iPad with real high-resolution HEIC/HEIF samples (requires physical Apple devices and sample files).
