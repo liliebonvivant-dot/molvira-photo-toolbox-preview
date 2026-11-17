@@ -387,3 +387,19 @@
 .collage-page .collage-output-offer p { margin:12px 0; overflow-wrap:anywhere; }
 .collage-page .collage-output-offer button { width:100%; white-space:normal; min-height:44px; height:auto; }
 @media(max-width:700px) { .collage-page .collage-stage canvas { max-height:420px; }.collage-page .collage-thumbnails { grid-template-columns:repeat(2,minmax(0,1fr)); }.collage-page .collage-photo .collage-toolbar { gap:3px; }.collage-page .collage-photo .collage-toolbar button { width:40px; height:44px; } }
+
+/* Instagram workspace: no changes to the approved tools. */
+.instagram-page .instagram-toolbar { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0; }
+.instagram-page .instagram-toolbar button { width:44px; height:44px; flex-shrink:0; }
+.instagram-page .instagram-stage { min-height:240px; display:flex; align-items:center; justify-content:center; overflow:hidden; border:1px solid var(--border); background:repeating-conic-gradient(var(--card) 0% 25%,var(--muted) 0% 50%) 0 0/20px 20px; }
+.instagram-page .instagram-stage canvas { display:block; max-width:100%; max-height:540px; width:auto; height:auto; touch-action:none; cursor:move; }
+.instagram-page .instagram-stage canvas:focus-visible { outline:2px solid var(--ring); outline-offset:-2px; }
+.instagram-page .instagram-status { min-height:24px; margin-top:12px; }
+.instagram-page .instagram-fit { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; }
+.instagram-page .instagram-fit button { flex:1; white-space:normal; height:auto; min-height:44px; font-size:11px; }
+.instagram-page .setting-field input[type=range] { min-height:32px; touch-action:none; }
+.instagram-page .setting-field>span { flex-wrap:wrap; }
+.instagram-page .instagram-output-offer { border-top:1px solid var(--border); margin-top:16px; padding-top:16px; font-size:12px; }
+.instagram-page .instagram-output-offer p { margin:12px 0; overflow-wrap:anywhere; }
+.instagram-page .instagram-output-offer button { width:100%; white-space:normal; min-height:44px; height:auto; }
+@media(max-width:700px) { .instagram-page .instagram-stage canvas { max-height:420px; } }

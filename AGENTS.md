@@ -51,3 +51,5 @@ use the editor.
 - Isolate the text/price/logo editor with source-pixel Canvas composition shared by preview and export, bounded layer/history/unique-logo budgets, and history-aware resource ownership; encode only on request to avoid repeated full-resolution work while editing and never import segmentation libraries.
 
 - Isolate collage UI/localization and output-coordinate Canvas composition; bound unique photo memory including undo assets, load sequentially with explicit source/output reduction, and reuse bounded encoding and gesture delivery to preserve existing processors.
+
+- Isolate Instagram UI/localization and output-coordinate rotation/framing composition shared by preview/export; reuse validated source decoding, explicit memory reductions and gesture delivery without segmentation imports to preserve existing tools.

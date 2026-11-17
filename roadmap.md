@@ -1,4 +1,8 @@
 # MOLVIRA PHOTO — Phase 1
+## Instagram Image Maker
+- [x] Implement isolated local framing, exact presets/custom dimensions, rotation, touch zoom/pan, bounded history and EN/PT/ES export; preserve nine tools and experimental block.
+- [x] Run 237 tests (206 previous + 31 Instagram); verify exact preset/custom downloads, pixel-identical native PNG preview, alpha, touch pan/pinch/scroll, explicit 48 MP reduction, EN/PT/ES and nine prior pages; deliver objective report without publishing.
+- [ ] Owner approval and physical Safari/iPhone/iPad/Android validation (requires owner and physical devices).
 ## Photo Collage Maker
 - [x] Implement isolated local multi-photo composition, layouts, per-photo framing, customization, bounded history and EN/PT/ES export; preserve eight tools and prototype.
 - [x] Run 206 automated tests (175 previous + 31 collage); verify real JPG/PNG/WebP downloads, pixel-identical PNG preview, explicit reductions, 12-photo grid, language continuity and mouse/touch/small-screen behavior; deliver objective report without publishing.
