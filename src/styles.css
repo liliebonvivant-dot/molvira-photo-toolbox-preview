@@ -361,3 +361,29 @@
 .text-editor-page .setting-field>span { flex-wrap:wrap; }
 .text-editor-page .editor-status { min-height:24px; margin-top:12px; }
 @media(max-width:700px) { .text-editor-page .setting-field textarea { font-size:16px; }.text-editor-page .editor-stage canvas { max-height:420px; } }
+
+/* Collage controls remain scoped to their own tool. */
+.collage-page .collage-toolbar { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0; }
+.collage-page .collage-toolbar button { width:44px; height:44px; flex-shrink:0; }
+.collage-page .collage-stage { min-height:240px; display:flex; align-items:center; justify-content:center; overflow:hidden; border:1px solid var(--border); background:repeating-conic-gradient(var(--card) 0% 25%,var(--muted) 0% 50%) 0 0/20px 20px; }
+.collage-page .collage-stage canvas { display:block; max-width:100%; max-height:540px; width:auto; height:auto; touch-action:none; cursor:move; }
+.collage-page .collage-stage canvas:focus-visible { outline:2px solid var(--ring); outline-offset:-2px; }
+.collage-page .collage-status { min-height:24px; margin-top:12px; }
+.collage-page .collage-photos { margin-top:22px; }
+.collage-page .collage-photos h2 { font-size:13px; font-weight:600; margin-bottom:12px; }
+.collage-page .collage-thumbnails { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:16px; }
+.collage-page .collage-photo { min-width:0; }
+.collage-page .collage-thumb { width:100%; height:108px; padding:5px; position:relative; }
+.collage-page .collage-thumb img { width:100%; height:100%; object-fit:contain; }
+.collage-page .collage-thumb span { position:absolute; bottom:5px; left:5px; background:var(--card); color:var(--foreground); padding:2px 6px; border-radius:4px; }
+.collage-page .collage-photo p { font-size:11px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:7px; }
+.collage-page .collage-photo small { display:block; font-size:10px; color:var(--muted-foreground); overflow-wrap:anywhere; }
+.collage-page .collage-framing { font-size:12px; font-weight:600; margin:20px 0 12px; }
+.collage-page .collage-fit { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; }
+.collage-page .collage-fit button { flex:1; white-space:normal; height:auto; min-height:44px; font-size:11px; }
+.collage-page .setting-field input[type=range] { min-height:32px; touch-action:none; }
+.collage-page .setting-field>span { flex-wrap:wrap; }
+.collage-page .collage-output-offer { border-top:1px solid var(--border); margin-top:16px; padding-top:16px; font-size:12px; }
+.collage-page .collage-output-offer p { margin:12px 0; overflow-wrap:anywhere; }
+.collage-page .collage-output-offer button { width:100%; white-space:normal; min-height:44px; height:auto; }
+@media(max-width:700px) { .collage-page .collage-stage canvas { max-height:420px; }.collage-page .collage-thumbnails { grid-template-columns:repeat(2,minmax(0,1fr)); }.collage-page .collage-photo .collage-toolbar { gap:3px; }.collage-page .collage-photo .collage-toolbar button { width:40px; height:44px; } }

@@ -1,4 +1,8 @@
 # MOLVIRA PHOTO — Phase 1
+## Photo Collage Maker
+- [x] Implement isolated local multi-photo composition, layouts, per-photo framing, customization, bounded history and EN/PT/ES export; preserve eight tools and prototype.
+- [x] Run 206 automated tests (175 previous + 31 collage); verify real JPG/PNG/WebP downloads, pixel-identical PNG preview, explicit reductions, 12-photo grid, language continuity and mouse/touch/small-screen behavior; deliver objective report without publishing.
+- [ ] Owner approval and physical Safari/iPhone/iPad/Android validation (requires owner and physical devices).
 ## Add Text, Prices & Logos
 - [x] Implement isolated local multi-layer editor, editable text/prices/logos, touch dragging/resizing, bounded undo/redo and EN/PT/ES export; preserve seven tools and prototype.
 - [x] Run 175 automated rules/regression tests; verify real JPG/PNG/WebP downloads, pixel-identical native preview/export, alpha 0/128, 48 MP desktop export, explicit iPhone reduction offer, touch controls and scrolling; report delivered without publishing.
