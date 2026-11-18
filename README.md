@@ -1,29 +1,27 @@
-# Welcome to your Lovable project
+# MOLVIRA PHOTO
 
-This project was built with [Lovable](https://lovable.dev).
+Free online image tools — Easy · Free · Private. Images are processed locally in the browser.
+13 tools: resize, crop & rotate, convert, compress, watermark, background removal, white background,
+text/prices/logos, collage, Instagram, WhatsApp, product ad and e-commerce images. EN / PT / ES.
 
-## Build with Lovable
+## Requirements
+- [Bun](https://bun.sh) 1.x (or Node.js 20+ with npm)
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
+## Install, run and build
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+bun install          # uses bun.lock for reproducible versions
+bun run dev          # development server
+bun run build        # production build
+bunx vitest run      # automated tests
 ```
 
-## Built with
+## Notes
+- Background removal uses `@imgly/background-removal` (AGPL-3.0). Its model/runtime files are
+  downloaded at use time from the IMG.LY asset host (`staticimgly.com`); images are not uploaded.
+- HEIC/HEIF decoding uses `heic-to` (LGPL-3.0), loaded on demand in a separate worker.
+- No credentials or secrets are required to build or run this project.
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+## License
+GNU Affero General Public License v3.0 — see [LICENSE](LICENSE).
+Third-party licenses: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+Name and logo: [TRADEMARKS.md](TRADEMARKS.md). Release identification: [RELEASING.md](RELEASING.md).

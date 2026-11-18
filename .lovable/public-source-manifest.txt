@@ -1,0 +1,6 @@
+# Include in the public snapshot
+src/ public/ package.json bun.lock bunfig.toml vite.config.ts vitest.config.ts tsconfig.json
+components.json eslint.config.js .prettierrc .prettierignore .gitignore
+README.md LICENSE THIRD-PARTY-NOTICES.md TRADEMARKS.md RELEASING.md
+# Exclude
+.lovable/ .oj-cache/ node_modules/ dist/ roadmap.md AGENTS.md .git/
