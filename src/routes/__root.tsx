@@ -84,6 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google-adsense-account", content: "ca-pub-2354052146318758" },
       { title: "MOLVIRA PHOTO — Free Online Image Tools" },
       { name: "description", content: "Free image editing and creative tools. Easy · Free · Private." },
       { property: "og:site_name", content: "MOLVIRA PHOTO" },

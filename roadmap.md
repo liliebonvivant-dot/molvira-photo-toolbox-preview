@@ -1,4 +1,7 @@
 # MOLVIRA PHOTO — Phase 1
+## Focused public copy and AdSense identification — 18 November 2026
+- [x] Add the owner-provided AdSense account meta once in the shared head, without enabling advertising or changing existing settings.
+- [x] Browser checks passed for the requested text/meta/footer on 54 public pages and Contact in EN/PT/ES; no advertising requests, background routes remain 404, unavailable notice preserved. Build OK; not published.
 ## Focused GA4 pageview correction — 18 November 2026
 - [x] Suppress duplicate automatic history pageviews with global send_page_view:false; retain manual consent-gated collection and unchanged Brazil consent behavior.
 - [x] Four analytics/consent tests passed; actual local Google requests changed from two page_view payloads to one on the same tool navigation. Build OK; not published. Consent-denied Google signals remain unchanged.
