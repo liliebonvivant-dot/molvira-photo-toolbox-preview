@@ -1,4 +1,5 @@
 import { absoluteUrl, isIndexable } from '../site-config';
+import { ecosystemCopy, ecosystemSlugs } from './ecosystem';
 import { isToolAvailable } from './availability';
 import { ecommerceCopy } from './ecommerce-copy';
 import { productAdCopy } from './product-ad-copy';
@@ -50,13 +51,18 @@ export function resolvePage(lang:Language, slug:string) {
  const index=langIndex(lang);
  const tool=tools.find(t=>t.slugs[index]===slug);
  const institution=(Object.keys(institutional) as Institutional[]).find(key=>institutional[key][index]===slug);
- return {tool,institution};
+ return {tool,institution,ecosystem:slug===ecosystemSlugs[lang]};
 }
 export function equivalentSlug(lang:Language, slug:string, next:Language) {
+ if(slug===ecosystemSlugs[lang])return ecosystemSlugs[next];
  const {tool,institution}=resolvePage(lang,slug);
  return tool?.slugs[langIndex(next)] ?? (institution ? institutional[institution][langIndex(next)] : undefined);
 }
 export function pageHead(lang:Language, slug?:string) {
+ if(slug===ecosystemSlugs[lang]) {
+  const c=ecosystemCopy[lang];const url=absoluteUrl(`/${lang}/${slug}`);
+  return {meta:[{title:`${c.title} — MOLVIRA PHOTO`},{name:'description',content:c.description},{property:'og:title',content:`${c.title} — MOLVIRA PHOTO`},{property:'og:description',content:c.description},{property:'og:type',content:'website'},{property:'og:url',content:url},{name:'twitter:card',content:'summary_large_image'},{name:'robots',content:isIndexable()?'index, follow':'noindex, nofollow'}],links:[{rel:'canonical',href:url},...languages.map(next=>({rel:'alternate',hrefLang:next==='pt'?'pt-BR':next,href:absoluteUrl(`/${next}/${ecosystemSlugs[next]}`)})),{rel:'alternate',hrefLang:'x-default',href:absoluteUrl(`/en/${ecosystemSlugs.en}`)}]};
+ }
  const c=copy[lang]; const resolved=slug ? resolvePage(lang,slug) : {tool:undefined,institution:undefined};
  const title=resolved.tool ? resolved.tool.titles[langIndex(lang)] : resolved.institution ? c[resolved.institution] : c.headline;
  const description=resolved.tool ? resolved.tool.id==='ecommerce' ? ecommerceCopy[lang].metadata : resolved.tool.id==='product-ad' ? productAdCopy[lang].metadata : resolved.tool.id==='whatsapp' ? whatsappCopy[lang].metadata : resolved.tool.id==='instagram' ? instagramCopy[lang].metadata : resolved.tool.id==='collage' ? collageCopy[lang].metadata : resolved.tool.id==='text' ? textEditorCopy[lang].metadata : resolved.tool.id==='white-background' ? whiteBackgroundCopy[lang].metadata : resolved.tool.id==='remove-background' ? backgroundCopy[lang].metadata : resolved.tool.id==='resize' ? resizeCopy[lang].metadata : resolved.tool.id==='crop' ? cropCopy[lang].metadata : resolved.tool.id==='convert' ? convertCopy[lang].metadata : resolved.tool.id==='compress' ? compressCopy[lang].metadata : resolved.tool.id==='watermark' ? watermarkCopy[lang].metadata : c.development : resolved.institution ? institutionalDescriptions[lang][resolved.institution] : c.description;

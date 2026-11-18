@@ -1,4 +1,7 @@
 # MOLVIRA PHOTO — Phase 1
+## Localized ecosystem catalog — 18 November 2026
+- [x] Replace the footer's PDF link with a localized catalog section; list only existing PHOTO/PDF products through an extensible list, preserving existing tools and integrations.
+- [x] Two focused tests passed; browser verified localized catalog, footer navigation, language continuity, official-site links, new metadata and desktop/mobile layout. Build OK; not published.
 ## Focused public copy and AdSense identification — 18 November 2026
 - [x] Add the owner-provided AdSense account meta once in the shared head, without enabling advertising or changing existing settings.
 - [x] Browser checks passed for the requested text/meta/footer on 54 public pages and Contact in EN/PT/ES; no advertising requests, background routes remain 404, unavailable notice preserved. Build OK; not published.
