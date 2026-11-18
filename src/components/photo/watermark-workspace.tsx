@@ -76,7 +76,7 @@ export function WatermarkWorkspace({tool,lang,slug}:{tool:Tool;lang:Language;slu
  return <Shell lang={lang} slug={slug}><main id="main" className="content-width tool-page resize-page watermark-page">
   <nav className="breadcrumbs"><Link to="/$lang" params={{lang}}>{c.home}</Link><ChevronRight size={13}/><span>{tool.titles[langIndex(lang)]}</span></nav>
   <div className="tool-page-heading"><ToolIcon tool={tool}/><div><h1>{tool.titles[langIndex(lang)]}</h1><p>{tool.descriptions[langIndex(lang)]}</p></div></div>
-  <div className="phase-notice"><ShieldCheck size={18}/><div><p>{r.local}</p><p>{r.pending}</p></div></div>
+  <div className="phase-notice"><ShieldCheck size={18}/><p>{r.local}</p></div>
   <div className="workspace"><div className="workspace-main">
    <section className="upload-area" onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();void load(e.dataTransfer.files[0],'photo');}}><ImagePlus size={32}/><h2>{c.upload}</h2><p>{c.drop}</p>
     <input ref={photoInput} type="file" className="sr-only" aria-label={c.choose} accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif" onChange={e=>{void load(e.target.files?.[0],'photo');e.target.value='';}}/>
