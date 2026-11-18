@@ -1,9 +1,14 @@
 # MOLVIRA PHOTO — Phase 1
+## Final services audit — 18 November 2026
+- [x] Confirm primary/alternate domain DNS and exact verified Search Console Domain property; preserve records and publication lock.
+- [x] Recheck 54 public pages, metadata, consent and real resize export; correct only repeated institutional metadata descriptions; run 348 regressions.
+- [ ] Submit sitemap and confirm GA4 reports after authorized publication (requires publication approval and GA4 report access).
 ## Final Google services preparation — no publication
 - [x] Configure single GA4 installation with purpose-specific consent and anonymous page/tool-selection events; preserve processors.
 - [x] Prepare real Search Console META token and validate domain SEO/sitemap; keep Remove Background unavailable and excluded.
 - [x] Keep AdSense/ads.txt inactive without publisher ID; document certified CMP and launch prerequisites; run 348 regressions and browser checks.
-- [ ] Complete Search Console verification and sitemap submission after authorized publication; confirm GA4 receipt in the actual property (requires publication and Analytics access).
+- [x] Confirm existing DNS-verified Search Console Domain property and owner access; no further verification required.
+- [ ] Submit sitemap after authorized publication; confirm GA4 receipt in the actual property (requires publication and Analytics report access).
 - [ ] Configure certified AdSense CMP and ads.txt with real publisher data before advertising activation (requires publisher ID and AdSense setup).
 ## BiRefNet-lite — renewed isolated feasibility request
 - [x] Verify exact official revision, author MIT permissions, original LFS identity, exported SHA256 and existing runtime/dependencies before reuse.
