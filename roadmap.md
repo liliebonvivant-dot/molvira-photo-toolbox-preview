@@ -1,4 +1,7 @@
 # MOLVIRA PHOTO — Phase 1
+## Institutional and legal pages — 18 November 2026
+- [x] Revise only About, Contact, Privacy, Terms and Cookies in EN/PT/ES using PDF structure and verified PHOTO practices; add the owner-approved email and retain licensing/advertising holds.
+- [x] Five focused navigation tests passed; 15 pages verified at desktop/mobile widths with email/policy links, language continuity, preserved canonical/hreflang/metadata and no runtime errors. Build OK; not published. Email delivery is not tested by a mailto-link check.
 ## Ecosystem card presentation — 18 November 2026
 - [x] Reuse unchanged official PDF/PHOTO logos and owner-provided descriptions in EN/PT/ES; preserve links and all other functionality.
 - [x] Two focused tests passed; browser confirmed logos, descriptions, preserved links and desktop/mobile cards in all three languages. Build OK; not published.
