@@ -1,14 +1,19 @@
 # MOLVIRA PHOTO — Phase 1
+## Pre-launch preparation closure — 18 November 2026
+- [x] Recheck existing GA4/consent, 54 sitemap pages, advertising reservations and regression tests without changing application code, services, licensing or publishing.
+- [x] Record owner-reported sitemap submission; do not resubmit. Preserve this instruction over historical submission tasks below.
+- [ ] Confirm Google's public sitemap reading/index processing and actual GA4 receipt after authorized publication (requires public deployment and access to the corresponding Google reports).
+- [ ] Activate advertising only after real publisher/account data, Google approval and applicable certified CMP setup; keep advertising disabled meanwhile.
 ## Final services audit — 18 November 2026
 - [x] Confirm primary/alternate domain DNS and exact verified Search Console Domain property; preserve records and publication lock.
 - [x] Recheck 54 public pages, metadata, consent and real resize export; correct only repeated institutional metadata descriptions; run 348 regressions.
-- [ ] Submit sitemap and confirm GA4 reports after authorized publication (requires publication approval and GA4 report access).
+- [ ] Confirm public sitemap processing and GA4 reports after authorized publication; submission reported complete by owner, no resubmission (requires publication approval and Google report access).
 ## Final Google services preparation — no publication
 - [x] Configure single GA4 installation with purpose-specific consent and anonymous page/tool-selection events; preserve processors.
 - [x] Prepare real Search Console META token and validate domain SEO/sitemap; keep Remove Background unavailable and excluded.
 - [x] Keep AdSense/ads.txt inactive without publisher ID; document certified CMP and launch prerequisites; run 348 regressions and browser checks.
 - [x] Confirm existing DNS-verified Search Console Domain property and owner access; no further verification required.
-- [ ] Submit sitemap after authorized publication; confirm GA4 receipt in the actual property (requires publication and Analytics report access).
+- [ ] Confirm public reading of the submitted sitemap and GA4 receipt in the actual property (requires publication and Analytics report access; do not resubmit).
 - [ ] Configure certified AdSense CMP and ads.txt with real publisher data before advertising activation (requires publisher ID and AdSense setup).
 ## BiRefNet-lite — renewed isolated feasibility request
 - [x] Verify exact official revision, author MIT permissions, original LFS identity, exported SHA256 and existing runtime/dependencies before reuse.
