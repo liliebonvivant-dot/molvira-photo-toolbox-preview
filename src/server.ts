@@ -2,7 +2,6 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
-import { rejectExperimentalRequest } from "./lib/experimental-access";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -50,8 +49,6 @@ function isH3SwallowedErrorBody(body: string): boolean {
 // twice and renders garbled.
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
-    const blocked = rejectExperimentalRequest(request);
-    if (blocked) return blocked;
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);

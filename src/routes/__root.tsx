@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
+import { adsenseId, ga4Id, isIndexable, siteConfig } from "../lib/site-config";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
@@ -88,7 +89,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Free image editing and creative tools. Easy · Free · Private." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "robots", content: "noindex, nofollow" },
+      { name: "robots", content: isIndexable() ? "index, follow" : "noindex, nofollow" },
+      ...(siteConfig.searchConsoleToken ? [{ name: "google-site-verification", content: siteConfig.searchConsoleToken }] : []),
+      ...(adsenseId() ? [{ name: "google-adsense-account", content: `ca-${adsenseId()}` }] : []),
     ],
     links: [
       {
@@ -115,6 +118,11 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        {ga4Id() && (<>
+          <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH']});gtag('consent','default',{ad_storage:'granted',ad_user_data:'granted',ad_personalization:'granted',analytics_storage:'granted'});gtag('js',new Date());gtag('config','${ga4Id()}');` }} />
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id()}`} />
+        </>)}
+        {adsenseId() && <script async crossOrigin="anonymous" src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-${adsenseId()}`} />}
       </head>
       <body>
         {children}

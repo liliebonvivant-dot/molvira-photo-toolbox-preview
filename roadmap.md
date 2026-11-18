@@ -104,3 +104,4 @@
 - [x] Prevent one-pixel preflight reductions in compression and verify original 3024 × 4032 dimensions when processing succeeds.
 - [x] Test JPG, PNG and HEIF outputs, increases and preserved saving; report physical-device limitations without publishing.
 - [ ] Confirm the owner's 3024 × 4032 HEIF photo on physical Apple devices (requires the original file and physical devices; prior successful saving was reported by the owner, not re-tested here).
+- [ ] Lançamento: domínio molviraphoto.com configurado; aguardando ID GA4, ID AdSense, token Search Console, ISNET e autorização final
