@@ -1,4 +1,7 @@
 # MOLVIRA PHOTO — Phase 1
+## Ecosystem card presentation — 18 November 2026
+- [x] Reuse unchanged official PDF/PHOTO logos and owner-provided descriptions in EN/PT/ES; preserve links and all other functionality.
+- [x] Two focused tests passed; browser confirmed logos, descriptions, preserved links and desktop/mobile cards in all three languages. Build OK; not published.
 ## Localized ecosystem catalog — 18 November 2026
 - [x] Replace the footer's PDF link with a localized catalog section; list only existing PHOTO/PDF products through an extensible list, preserving existing tools and integrations.
 - [x] Two focused tests passed; browser verified localized catalog, footer navigation, language continuity, official-site links, new metadata and desktop/mobile layout. Build OK; not published.
