@@ -1,7 +1,7 @@
 # MOLVIRA PHOTO — Phase 1
 ## Authorized publication — 18 November 2026
-- [ ] Publish only PHOTO to the official domain; preserve design, languages, indexing settings, consent and disabled ads; exclude the held background processor from public bundles.
-- [ ] Verify official-domain access, 54 sitemap pages, public tool exports, blocked/internal paths and consent-controlled real GA4 requests; report Search Console status without resubmission.
+- [x] Publish only PHOTO to the official domain; preserve design, languages, indexing settings, consent and disabled ads; exclude the held background processor from public bundles.
+- [x] Verify official-domain access, 54 sitemap pages, 12 public tool exports, blocked/internal paths and consent-controlled real GA4 requests (204); Search Console remains pending with one unspecified error, no resubmission.
 - [ ] Confirm GA4 property receipt and resolve indexing/AdSense/licensing and physical-device limitations (requires Google report access, owner decisions and external validation).
 ## Pre-launch preparation closure — 18 November 2026
 - [x] Recheck existing GA4/consent, 54 sitemap pages, advertising reservations and regression tests without changing application code, services, licensing or publishing.
