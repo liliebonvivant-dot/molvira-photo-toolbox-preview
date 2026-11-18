@@ -12,7 +12,7 @@ export function sitemapXml(config = siteConfig) {
   void equivalentSlug;
   const urls = groups.flatMap((g) =>
     g.map((path) => {
-      const alts = g.map((p, i) => `<xhtml:link rel="alternate" hreflang="${hreflang(languages[i])}" href="${absoluteUrl(p, config)}"/>`).join('');
+      const alts = g.map((p, i) => `<xhtml:link rel="alternate" hreflang="${hreflang(languages[i] ?? "en")}" href="${absoluteUrl(p, config)}"/>`).join('');
       const xd = `<xhtml:link rel="alternate" hreflang="x-default" href="${absoluteUrl(g[0] ?? "", config)}"/>`;
       return `<url><loc>${absoluteUrl(path, config)}</loc>${alts}${xd}</url>`;
     }),
