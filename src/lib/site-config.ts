@@ -6,7 +6,7 @@ export const siteConfig = {
   /** Official origin, https only, no trailing slash (e.g. https://photo.example.com). */
   siteUrl: 'https://molviraphoto.com',
   /** Set true only after owner approval to allow search indexing. Requires siteUrl. */
-  indexingApproved: false,
+  indexingApproved: true,
   /** Google Search Console HTML-tag verification content value. */
   searchConsoleToken: '1QQZByrgeFpfCFLRMDEkRnUZdvxOBc3PAmk4mR19VFE',
   /** GA4 measurement ID (G-XXXXXXXX). */

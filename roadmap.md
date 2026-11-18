@@ -1,4 +1,7 @@
 # MOLVIRA PHOTO — Phase 1
+## Authorized public indexing — 18 November 2026
+- [ ] Release public robots/metadata indexing only; preserve the 54 sitemap URLs, international SEO, analytics, disabled ads and licensing-held access boundaries.
+- [ ] Run regressions, publish PHOTO only and verify official-domain crawler responses; report indexing eligibility without claiming Google inclusion.
 ## Authorized publication — 18 November 2026
 - [x] Publish only PHOTO to the official domain; preserve design, languages, indexing settings, consent and disabled ads; exclude the held background processor from public bundles.
 - [x] Verify official-domain access, 54 sitemap pages, 12 public tool exports, blocked/internal paths and consent-controlled real GA4 requests (204); Search Console remains pending with one unspecified error, no resubmission.

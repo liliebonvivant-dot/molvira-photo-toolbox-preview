@@ -3,10 +3,10 @@ import { absoluteUrl, adsTxt, ga4Id, isIndexable, robotsTxt, siteConfig } from '
 import { sitemapXml } from '@/lib/sitemap';
 const live = { ...siteConfig, siteUrl: 'https://photo.example.com', indexingApproved: true, ga4Id: 'G-ABC1234', adsensePublisherId: 'pub-1234567890123456' };
 describe('launch configuration', () => {
-  it('keeps indexing and advertising off while the supplied GA4 ID is prepared', () => {
-    expect(isIndexable()).toBe(false);
+  it('allows owner-approved indexing while preserving GA4 and disabled advertising', () => {
+    expect(isIndexable()).toBe(true);
     expect(absoluteUrl('/en')).toBe('https://molviraphoto.com/en');
-    expect(robotsTxt()).toContain('Disallow: /');
+    expect(robotsTxt()).toBe('User-agent: *\nAllow: /\n\nSitemap: https://molviraphoto.com/sitemap.xml\n');
     expect(ga4Id()).toBe('G-8DVNVSTRCH');
     expect(adsTxt()).toBeNull();
   });
