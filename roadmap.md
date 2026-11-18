@@ -1,4 +1,7 @@
 # MOLVIRA PHOTO — Phase 1
+## Focused GA4 pageview correction — 18 November 2026
+- [x] Suppress duplicate automatic history pageviews with global send_page_view:false; retain manual consent-gated collection and unchanged Brazil consent behavior.
+- [x] Four analytics/consent tests passed; actual local Google requests changed from two page_view payloads to one on the same tool navigation. Build OK; not published. Consent-denied Google signals remain unchanged.
 ## Authorized public indexing — 18 November 2026
 - [x] Release public robots/metadata indexing only; preserve the 54 sitemap URLs, international SEO, analytics, disabled ads and licensing-held access boundaries.
 - [x] Run 351 regressions, publish PHOTO only and verify all 54 official-domain crawler responses; report indexing eligibility without claiming Google inclusion.

@@ -40,6 +40,7 @@ use the editor.
 - Resize and crop share large-image decoding (large-image.ts + reduce-prompt.tsx) built on the conversion pixel-budget/canvas probe; a reduced working copy is created only after explicit user choice, and export failures offer that reduction instead of failing silently.
 - Use react-image-crop for touch/keyboard selection and numeric affine transforms with clipping polygons for crop history; render from the original once to avoid cumulative quality loss and bound history to 30 steps.
 - Store language and per-purpose consent only; never persist images. Gate one GA4 observer by consent; send catalog IDs, never image data.
+- Disable global automatic GA4 pageviews before config to prevent duplicate history views.
 - Keep international metadata on content leaves and exclude development pages from indexing; resolve sitemap locations to the approved absolute domain before launch.
 
 - Isolate watermark UI, source lifecycle, localization and native Canvas composition; reuse HEIF decoding, explicit reduction and untouched file delivery, with a bounded display canvas and original-resolution export.

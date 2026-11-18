@@ -20,6 +20,9 @@ export async function trackPage(path: string, language: string, toolId?: string)
     script.id = 'molvira-ga4';
     document.head.appendChild(script);
     w.gtag('set', 'developer_id.dZjgwMW', true);
+    // Global scope also suppresses enhanced-measurement history pageviews.
+    // Keep our consent-gated observer as the single pageview source.
+    w.gtag('set', 'send_page_view', false);
     w.gtag('js', new Date());
     w.gtag('config', id, { send_page_view: false, allow_google_signals: false, allow_ad_personalization_signals: false });
   }
