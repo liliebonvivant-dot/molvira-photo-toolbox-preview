@@ -1,4 +1,10 @@
 # MOLVIRA PHOTO — Phase 1
+## Final Google services preparation — no publication
+- [x] Configure single GA4 installation with purpose-specific consent and anonymous page/tool-selection events; preserve processors.
+- [x] Prepare real Search Console META token and validate domain SEO/sitemap; keep Remove Background unavailable and excluded.
+- [x] Keep AdSense/ads.txt inactive without publisher ID; document certified CMP and launch prerequisites; run 348 regressions and browser checks.
+- [ ] Complete Search Console verification and sitemap submission after authorized publication; confirm GA4 receipt in the actual property (requires publication and Analytics access).
+- [ ] Configure certified AdSense CMP and ads.txt with real publisher data before advertising activation (requires publisher ID and AdSense setup).
 ## BiRefNet-lite — renewed isolated feasibility request
 - [x] Verify exact official revision, author MIT permissions, original LFS identity, exported SHA256 and existing runtime/dependencies before reuse.
 - [x] Evaluate conversion/INT8 infrastructure; stop quantization because ONNX/PyTorch/export packages are unavailable, without enabling routes or installing dependencies.
@@ -104,4 +110,4 @@
 - [x] Prevent one-pixel preflight reductions in compression and verify original 3024 × 4032 dimensions when processing succeeds.
 - [x] Test JPG, PNG and HEIF outputs, increases and preserved saving; report physical-device limitations without publishing.
 - [ ] Confirm the owner's 3024 × 4032 HEIF photo on physical Apple devices (requires the original file and physical devices; prior successful saving was reported by the owner, not re-tested here).
-- [ ] Lançamento: domínio molviraphoto.com configurado; aguardando ID GA4, ID AdSense, token Search Console, ISNET e autorização final
+- [ ] Lançamento: GA4 e token Search Console preparados; Remover Fundo bloqueada; aguardando autorização final, domínio ativo, validação física e conformidade/fonte pública. AdSense aguarda dados reais e CMP certificado.

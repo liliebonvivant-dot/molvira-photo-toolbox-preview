@@ -8,9 +8,9 @@ export const siteConfig = {
   /** Set true only after owner approval to allow search indexing. Requires siteUrl. */
   indexingApproved: false,
   /** Google Search Console HTML-tag verification content value. */
-  searchConsoleToken: '',
+  searchConsoleToken: '1QQZByrgeFpfCFLRMDEkRnUZdvxOBc3PAmk4mR19VFE',
   /** GA4 measurement ID (G-XXXXXXXX). */
-  ga4Id: '',
+  ga4Id: import.meta.env['VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY'] ?? 'G-8DVNVSTRCH',
   /** AdSense publisher ID (pub-XXXXXXXXXXXXXXXX). */
   adsensePublisherId: '',
 };

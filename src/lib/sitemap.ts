@@ -1,12 +1,13 @@
 import { equivalentSlug, institutional, languages, tools, type Language } from './photo/content';
 import { absoluteUrl, siteConfig } from './site-config';
+import { isToolAvailable } from './photo/availability';
 
 const hreflang = (l: Language) => (l === 'pt' ? 'pt-BR' : l);
 
 /** All public pages (home + tools + institutional) in EN/PT/ES with hreflang alternates. */
 export function sitemapXml(config = siteConfig) {
   const groups: string[][] = [languages.map((l) => `/${l}`)];
-  for (const t of tools) groups.push([...t.slugs].map((s, i) => `/${languages[i]}/${s}`));
+  for (const t of tools.filter(t => isToolAvailable(t.id))) groups.push([...t.slugs].map((s, i) => `/${languages[i]}/${s}`));
   for (const k of Object.keys(institutional) as (keyof typeof institutional)[])
     groups.push([...institutional[k]].map((s, i) => `/${languages[i]}/${s}`));
   void equivalentSlug;
