@@ -11,8 +11,8 @@ export const siteConfig = {
   searchConsoleToken: '1QQZByrgeFpfCFLRMDEkRnUZdvxOBc3PAmk4mR19VFE',
   /** GA4 measurement ID (G-XXXXXXXX). */
   ga4Id: import.meta.env['VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY'] ?? 'G-8DVNVSTRCH',
-  /** AdSense publisher ID (pub-XXXXXXXXXXXXXXXX). */
-  adsensePublisherId: '',
+  /** AdSense publisher ID (pub-XXXXXXXXXXXXXXXX). Used only for ads.txt; ads stay off. */
+  adsensePublisherId: 'pub-2354052146318758',
 };
 
 const validOrigin = (u: string) => /^https:\/\/[a-z0-9.-]+\.[a-z]{2,}$/i.test(u);

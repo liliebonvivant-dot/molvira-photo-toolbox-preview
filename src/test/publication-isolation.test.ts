@@ -12,7 +12,7 @@ describe('authorized public release boundaries', () => {
       expect(isUnavailablePath(path)).toBe(true);
     }
   });
-  it('keeps AdSense disabled for the approved release', () => {
-    expect(adsTxt()).toBeNull();
+  it('serves only the authorized ads.txt line while ads stay disabled', () => {
+    expect(adsTxt()).toBe('google.com, pub-2354052146318758, DIRECT, f08c47fec0942fa0\n');
   });
 });

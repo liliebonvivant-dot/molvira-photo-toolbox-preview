@@ -11,8 +11,8 @@ describe('Google preparation rules',()=>{
     for(const path of ['/en/remove-image-background','/pt/remover-fundo-de-imagem','/es/eliminar-fondo-de-imagen','/en/%72emove-image-background/'])expect(isUnavailablePath(path)).toBe(true);
     expect(isUnavailablePath('/en/white-background-maker')).toBe(false);
   });
-  it('keeps AdSense without a publisher after owner-approved indexing',()=>{
-    expect(adsenseId()).toBe('');expect(siteConfig.indexingApproved).toBe(true);
+  it('serves the authorized AdSense publisher only in ads.txt, with ads still disabled',()=>{
+    expect(adsenseId()).toBe('pub-2354052146318758');expect(siteConfig.indexingApproved).toBe(true);
   });
   it('requires analytics permission in Canada and honors withdrawal without granting advertising',async()=>{
     expect(await canTrack('analytics')).toBe(false);

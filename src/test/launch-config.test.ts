@@ -8,7 +8,7 @@ describe('launch configuration', () => {
     expect(absoluteUrl('/en')).toBe('https://molviraphoto.com/en');
     expect(robotsTxt()).toBe('User-agent: *\nAllow: /\n\nSitemap: https://molviraphoto.com/sitemap.xml\n');
     expect(ga4Id()).toBe('G-8DVNVSTRCH');
-    expect(adsTxt()).toBeNull();
+    expect(adsTxt()).toBe('google.com, pub-2354052146318758, DIRECT, f08c47fec0942fa0\n');
   });
   it('does not index with a domain but without approval', () => {
     expect(isIndexable({ ...live, indexingApproved: false })).toBe(false);
