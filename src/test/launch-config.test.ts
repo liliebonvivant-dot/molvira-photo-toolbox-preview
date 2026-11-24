@@ -18,12 +18,12 @@ describe('launch configuration', () => {
     expect(robotsTxt(live)).toContain('Sitemap: https://photo.example.com/sitemap.xml');
     expect(adsTxt(live)).toBe('google.com, pub-1234567890123456, DIRECT, f08c47fec0942fa0\n');
   });
-  it('lists home, 12 available tools and 5 institutional pages in three languages', () => {
+  it('lists home, 13 tools and 5 institutional pages in three languages (57 URLs)', () => {
     const xml = sitemapXml(live);
-    expect(xml.match(/<url>/g)?.length).toBe((1 + 12 + 5) * 3);
-    expect(xml).not.toContain('remove-image-background');
-    expect(xml).not.toContain('remover-fundo-de-imagem');
-    expect(xml).not.toContain('eliminar-fondo-de-imagen');
+    expect(xml.match(/<url>/g)?.length).toBe(57);
+    expect(xml).toContain('<loc>https://photo.example.com/en/remove-image-background</loc>');
+    expect(xml).toContain('<loc>https://photo.example.com/pt/remover-fundo-de-imagem</loc>');
+    expect(xml).toContain('<loc>https://photo.example.com/es/eliminar-fondo-de-imagen</loc>');
     expect(xml).toContain('<loc>https://photo.example.com/pt/criador-de-imagens-para-whatsapp</loc>');
     expect(xml).toContain('hreflang="pt-BR"');
   });

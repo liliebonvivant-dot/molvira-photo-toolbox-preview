@@ -8,13 +8,13 @@ import { ConvertWorkspace } from './convert-workspace';
 import { CompressWorkspace } from './compress-workspace';
 import { WatermarkWorkspace } from './watermark-workspace';
 import { TextEditorWorkspace } from './text-editor-workspace';
+import { BackgroundWorkspace } from './background-workspace';
 import { WhiteBackgroundWorkspace } from './white-background-workspace';
 import { CollageWorkspace } from './collage-workspace';
 import { InstagramWorkspace } from './instagram-workspace';
-// Keep the licensing-held processor outside the public import graph, not just behind a route guard.
-const workspaces = { ecommerce: EcommerceWorkspace, 'product-ad': ProductAdWorkspace, whatsapp: WhatsAppWorkspace, instagram: InstagramWorkspace, collage: CollageWorkspace, text: TextEditorWorkspace, 'white-background': WhiteBackgroundWorkspace, watermark: WatermarkWorkspace, compress: CompressWorkspace, resize: ResizeWorkspace, crop: CropWorkspace, convert: ConvertWorkspace };
+// Public tool registry: every catalog tool maps to its local processor.
+const workspaces = { ecommerce: EcommerceWorkspace, 'product-ad': ProductAdWorkspace, whatsapp: WhatsAppWorkspace, instagram: InstagramWorkspace, collage: CollageWorkspace, text: TextEditorWorkspace, 'white-background': WhiteBackgroundWorkspace, 'remove-background': BackgroundWorkspace, watermark: WatermarkWorkspace, compress: CompressWorkspace, resize: ResizeWorkspace, crop: CropWorkspace, convert: ConvertWorkspace };
 export function Workspace(props: {tool:Tool;lang:Language;slug:string}) {
-  if (props.tool.id === 'remove-background') return null;
   const Editor=workspaces[props.tool.id];
   return <Editor {...props}/>;
 }

@@ -1,10 +1,7 @@
-/** Preserve the catalog and processor; licensing hold denies all public execution. */
-export function isToolAvailable(id: string) {
-  return id !== 'remove-background';
+/** All catalog tools are public; Remove Background was released after IS-Net commercial authorization. */
+export function isToolAvailable(_id: string) {
+  return true;
 }
-export function isUnavailablePath(path: string) {
-  try {
-    const decoded = decodeURIComponent(path).replace(/\/+$/, '');
-    return /^\/(en\/remove-image-background|pt\/remover-fundo-de-imagem|es\/eliminar-fondo-de-imagen)$/.test(decoded);
-  } catch { return false; }
+export function isUnavailablePath(_path: string) {
+  return false;
 }

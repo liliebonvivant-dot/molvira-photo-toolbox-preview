@@ -143,3 +143,5 @@
 - [x] Test JPG, PNG and HEIF outputs, increases and preserved saving; report physical-device limitations without publishing.
 - [ ] Confirm the owner's 3024 × 4032 HEIF photo on physical Apple devices (requires the original file and physical devices; prior successful saving was reported by the owner, not re-tested here).
 - [ ] Lançamento: GA4 e token Search Console preparados; Remover Fundo bloqueada; aguardando autorização final, domínio ativo, validação física e conformidade/fonte pública. AdSense aguarda dados reais e CMP certificado.
+
+- [ ] Remove Background: link public GitHub source (AGPL) — waiting for owner to connect GitHub and make repo public
