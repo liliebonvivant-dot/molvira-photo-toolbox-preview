@@ -4,7 +4,7 @@ import type { Language } from './content';
  * Public AGPL-3.0 source repository. Keep empty until a real public address exists:
  * while empty, no source-code link is rendered anywhere (no placeholder or broken link).
  */
-export const sourceCodeUrl = '';
+export const sourceCodeUrl = 'https://github.com/liliebonvivant-dot/molvira-photo-toolbox-preview';
 
 const labels: Record<Language, { link: string; notice: string }> = {
   en: { link: 'Source code (AGPL-3.0)', notice: 'MOLVIRA PHOTO is free software licensed under the GNU AGPL-3.0. You can obtain the complete corresponding source code of this site at the link below.' },

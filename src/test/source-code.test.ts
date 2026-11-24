@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { sourceCode, sourceCodeUrl } from '@/lib/photo/source-code';
 describe('AGPL source-code link', () => {
-  it('stays hidden while no public repository address exists', () => {
-    expect(sourceCodeUrl).toBe('');
-    expect(sourceCode('en')).toBeNull();
+  it('points to the public repository in all three languages', () => {
+    expect(sourceCodeUrl).toBe('https://github.com/liliebonvivant-dot/molvira-photo-toolbox-preview');
+    expect(sourceCode('en')?.url).toBe(sourceCodeUrl);
+    expect(sourceCode('pt')?.url).toBe(sourceCodeUrl);
+    expect(sourceCode('es')?.url).toBe(sourceCodeUrl);
   });
   it('rejects non-https or placeholder addresses', () => {
     expect(sourceCode('pt', 'http://x.dev')).toBeNull();
