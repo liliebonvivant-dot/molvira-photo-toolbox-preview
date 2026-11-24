@@ -58,14 +58,24 @@ export function equivalentSlug(lang:Language, slug:string, next:Language) {
  const {tool,institution}=resolvePage(lang,slug);
  return tool?.slugs[langIndex(next)] ?? (institution ? institutional[institution][langIndex(next)] : undefined);
 }
+function breadcrumbScripts(lang: Language, slug: string, title: string) {
+ return [{ type: 'application/ld+json', children: JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+   { '@type': 'ListItem', position: 1, name: copy[lang].home, item: absoluteUrl(`/${lang}`) },
+   { '@type': 'ListItem', position: 2, name: title, item: absoluteUrl(`/${lang}/${slug}`) },
+  ],
+ }) }];
+}
 export function pageHead(lang:Language, slug?:string) {
  if(slug===ecosystemSlugs[lang]) {
   const c=ecosystemCopy[lang];const url=absoluteUrl(`/${lang}/${slug}`);
-  return {meta:[{title:`${c.title} — MOLVIRA PHOTO`},{name:'description',content:c.description},{property:'og:title',content:`${c.title} — MOLVIRA PHOTO`},{property:'og:description',content:c.description},{property:'og:type',content:'website'},{property:'og:url',content:url},{name:'twitter:card',content:'summary_large_image'},{name:'robots',content:isIndexable()?'index, follow':'noindex, nofollow'}],links:[{rel:'canonical',href:url},...languages.map(next=>({rel:'alternate',hrefLang:next==='pt'?'pt-BR':next,href:absoluteUrl(`/${next}/${ecosystemSlugs[next]}`)})),{rel:'alternate',hrefLang:'x-default',href:absoluteUrl(`/en/${ecosystemSlugs.en}`)}]};
+  return {scripts:breadcrumbScripts(lang,slug,c.title),meta:[{title:`${c.title} — MOLVIRA PHOTO`},{name:'description',content:c.description},{property:'og:title',content:`${c.title} — MOLVIRA PHOTO`},{property:'og:description',content:c.description},{property:'og:type',content:'website'},{property:'og:url',content:url},{name:'twitter:card',content:'summary_large_image'},{name:'robots',content:isIndexable()?'index, follow':'noindex, nofollow'}],links:[{rel:'canonical',href:url},...languages.map(next=>({rel:'alternate',hrefLang:next==='pt'?'pt-BR':next,href:absoluteUrl(`/${next}/${ecosystemSlugs[next]}`)})),{rel:'alternate',hrefLang:'x-default',href:absoluteUrl(`/en/${ecosystemSlugs.en}`)}]};
  }
  const c=copy[lang]; const resolved=slug ? resolvePage(lang,slug) : {tool:undefined,institution:undefined};
  const title=resolved.tool ? resolved.tool.titles[langIndex(lang)] : resolved.institution ? c[resolved.institution] : c.headline;
  const description=resolved.tool ? resolved.tool.id==='ecommerce' ? ecommerceCopy[lang].metadata : resolved.tool.id==='product-ad' ? productAdCopy[lang].metadata : resolved.tool.id==='whatsapp' ? whatsappCopy[lang].metadata : resolved.tool.id==='instagram' ? instagramCopy[lang].metadata : resolved.tool.id==='collage' ? collageCopy[lang].metadata : resolved.tool.id==='text' ? textEditorCopy[lang].metadata : resolved.tool.id==='white-background' ? whiteBackgroundCopy[lang].metadata : resolved.tool.id==='remove-background' ? backgroundCopy[lang].metadata : resolved.tool.id==='resize' ? resizeCopy[lang].metadata : resolved.tool.id==='crop' ? cropCopy[lang].metadata : resolved.tool.id==='convert' ? convertCopy[lang].metadata : resolved.tool.id==='compress' ? compressCopy[lang].metadata : resolved.tool.id==='watermark' ? watermarkCopy[lang].metadata : c.development : resolved.institution ? institutionalDescriptions[lang][resolved.institution] : c.description;
  const path=slug ? `/${lang}/${slug}` : `/${lang}`;
- return {meta:[{title:`${title} — MOLVIRA PHOTO`},{name:'description',content:description},{property:'og:title',content:`${title} — MOLVIRA PHOTO`},{property:'og:description',content:description},{property:'og:type',content:'website'},{property:'og:url',content:absoluteUrl(path)},{name:'twitter:card',content:'summary_large_image'},{name:'robots',content:isIndexable()&&(!resolved.tool||isToolAvailable(resolved.tool.id))?'index, follow':'noindex, nofollow'}],links:[{rel:'canonical',href:absoluteUrl(path)},...languages.map(next=>({rel:'alternate',hrefLang:next==='pt'?'pt-BR':next,href:absoluteUrl(slug?`/${next}/${equivalentSlug(lang,slug,next)??''}`:`/${next}`)})),{rel:'alternate',hrefLang:'x-default',href:absoluteUrl(slug?`/en/${equivalentSlug(lang,slug,'en')??''}`:'/en')}]};
+ return {scripts:slug&&(resolved.tool||resolved.institution)?breadcrumbScripts(lang,slug,title):[],meta:[{title:`${title} — MOLVIRA PHOTO`},{name:'description',content:description},{property:'og:title',content:`${title} — MOLVIRA PHOTO`},{property:'og:description',content:description},{property:'og:type',content:'website'},{property:'og:url',content:absoluteUrl(path)},{name:'twitter:card',content:'summary_large_image'},{name:'robots',content:isIndexable()&&(!resolved.tool||isToolAvailable(resolved.tool.id))?'index, follow':'noindex, nofollow'}],links:[{rel:'canonical',href:absoluteUrl(path)},...languages.map(next=>({rel:'alternate',hrefLang:next==='pt'?'pt-BR':next,href:absoluteUrl(slug?`/${next}/${equivalentSlug(lang,slug,next)??''}`:`/${next}`)})),{rel:'alternate',hrefLang:'x-default',href:absoluteUrl(slug?`/en/${equivalentSlug(lang,slug,'en')??''}`:'/en')}]};
 }
